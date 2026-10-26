@@ -72,7 +72,7 @@
     --azul-suave: #e9eef7;
     --granate: #7a2333;       /* CCSS II */
     --granate-suave: #f6eaec;
-    --oro: #b08a4f;           /* filetes y detalles */
+    --oro: #93723d;           /* filetes y detalles */
 
     --acento: var(--azul);
     --acento-suave: var(--azul-suave);
@@ -286,7 +286,7 @@
 :root .menu.abierto .menu-toggle span:nth-child(2) { opacity: 0; }
 :root .menu.abierto .menu-toggle span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
 
-@media (max-width: 960px) {
+@media (max-width: 1100px) {
 
     :root .menu {
         flex-wrap: wrap;
@@ -1868,4 +1868,1081 @@
     :root .board ul {
         max-height: 360px;
     }
+}
+
+
+/* #########################################################
+   ##                                                     ##
+   ##   PIEZAS NUEVAS (los dos modos)                      ##
+   ##                                                     ##
+######################################################### */
+
+/* ---------- Menú: orden y botones de acción ---------- */
+
+:root .menu-marca     { order: 1; }
+:root .menu-contenido { order: 2; margin-left: auto; }
+:root .menu-acciones  { order: 3; }
+:root .menu-toggle    { order: 4; }
+
+:root .menu-acciones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 14px;
+    border-left: 1px solid var(--borde);
+}
+
+:root .menu-buscar,
+:root .menu-tema {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: var(--tarjeta);
+    color: var(--tinta-2);
+    font-family: var(--sans);
+    font-size: .82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color .15s ease, color .15s ease, background-color .15s ease;
+}
+
+:root .menu-tema {
+    width: 38px;
+    padding: 0;
+}
+
+:root .menu-buscar:hover,
+:root .menu-tema:hover {
+    border-color: var(--acento);
+    color: var(--tinta);
+}
+
+:root .menu-buscar svg,
+:root .menu-tema svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+:root .menu-buscar kbd,
+:root .buscador kbd {
+    padding: 2px 6px;
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    background: var(--relleno);
+    color: var(--gris);
+    font-family: var(--sans);
+    font-size: .68rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+:root .menu-tema .icono-sol { display: none; }
+:root[data-tema="noche"] .menu-tema .icono-sol { display: block; }
+:root[data-tema="noche"] .menu-tema .icono-luna { display: none; }
+
+@media (max-width: 1280px) {
+    :root .menu-buscar kbd { display: none; }
+}
+
+@media (max-width: 1100px) {
+
+    :root .menu-acciones {
+        margin-left: auto;
+        padding-left: 0;
+        border-left: 0;
+        margin-right: 8px;
+    }
+
+    :root .menu-contenido {
+        order: 5;
+        margin-left: 0;
+    }
+
+    :root .menu-buscar span {
+        display: none;
+    }
+
+    :root .menu-buscar {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+    }
+
+    :root .menu-tema {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+
+/* ---------- Curva de Gauss en la cabecera ---------- */
+
+:root .hero-curva {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 72%;
+    color: var(--azul);
+    opacity: .16;
+    pointer-events: none;
+}
+
+:root .hero-curva .hc-linea {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: dibujar 2.6s .3s cubic-bezier(.65, 0, .35, 1) forwards;
+}
+
+:root .hero-curva .hc-eje,
+:root .hero-curva .hc-media {
+    stroke: currentColor;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    opacity: .5;
+}
+
+:root .hero-curva .hc-media {
+    stroke-dasharray: 4 5;
+}
+
+:root .hero-curva .hc-area {
+    opacity: 0;
+    animation: aparecer 1.2s 2.2s ease forwards;
+}
+
+@keyframes dibujar { to { stroke-dashoffset: 0; } }
+@keyframes aparecer { to { opacity: 1; } }
+
+
+/* ---------- Próximos exámenes ---------- */
+
+:root .proximos {
+    margin: 0 0 56px;
+}
+
+:root .proximos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+:root .examen-prox {
+    position: relative;
+    padding: 26px 26px 24px;
+    background: var(--tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+}
+
+:root .examen-prox::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--azul);
+}
+
+:root .examen-prox[data-curso-card="2"]::before {
+    background: var(--granate);
+}
+
+:root .examen-prox.esqueleto {
+    min-height: 196px;
+    background:
+        linear-gradient(100deg, transparent 30%, var(--relleno) 50%, transparent 70%) 0 0 / 200% 100%,
+        var(--tarjeta);
+    animation: brillo 1.4s linear infinite;
+}
+
+@keyframes brillo { to { background-position: -200% 0, 0 0; } }
+
+:root .ep-curso {
+    margin: 0 0 10px;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--azul);
+}
+
+:root .examen-prox[data-curso-card="2"] .ep-curso {
+    color: var(--granate);
+}
+
+:root .ep-titulo {
+    margin: 0 0 6px;
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--tinta);
+}
+
+:root .ep-titulo a {
+    color: inherit;
+    text-decoration: none;
+}
+
+:root .ep-titulo a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--oro);
+    text-underline-offset: 4px;
+}
+
+:root .ep-vacio {
+    color: var(--tinta-2);
+}
+
+:root .ep-fecha {
+    margin: 0 0 18px;
+    font-size: .88rem;
+    color: var(--gris);
+}
+
+:root .ep-fecha::first-letter {
+    text-transform: uppercase;
+}
+
+:root .ep-cuenta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+:root .ep-cuenta div {
+    padding: 12px 4px 10px;
+    text-align: center;
+    background: var(--relleno);
+    border: 1px solid var(--borde-suave);
+    border-radius: 10px;
+}
+
+:root .ep-cuenta strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--tinta);
+}
+
+:root .ep-cuenta small {
+    display: block;
+    margin-top: 6px;
+    font-size: .62rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gris);
+}
+
+:root .ep-cuenta.urgente strong {
+    color: var(--granate);
+}
+
+:root .ep-siguiente {
+    margin: 16px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--borde-suave);
+    font-size: .8rem;
+    color: var(--gris);
+}
+
+@media (max-width: 720px) {
+    :root .proximos { margin-bottom: 40px; }
+    :root .proximos-grid { grid-template-columns: 1fr; gap: 14px; }
+    :root .examen-prox { padding: 22px 20px 20px; }
+    :root .ep-cuenta strong { font-size: 1.6rem; }
+}
+
+
+/* ---------- Buscador ---------- */
+
+:root.sin-scroll,
+:root.sin-scroll body {
+    overflow: hidden !important;
+}
+
+:root .buscador {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 12vh 16px 16px;
+}
+
+:root .buscador.abierto {
+    display: flex;
+}
+
+:root .buscador-fondo {
+    position: absolute;
+    inset: 0;
+    background: rgba(7, 11, 22, .55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    animation: aparecer .2s ease forwards;
+    opacity: 0;
+}
+
+:root .buscador-caja {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--papel);
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+    overflow: hidden;
+    animation: subir .22s ease;
+}
+
+@keyframes subir {
+    from { opacity: 0; transform: translateY(10px) scale(.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+:root .buscador-campo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--borde);
+}
+
+:root .buscador-campo svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    fill: var(--gris);
+}
+
+:root .buscador-campo input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--tinta);
+    font-family: var(--sans);
+    font-size: 1.05rem;
+}
+
+:root .buscador-campo input::placeholder {
+    color: var(--gris);
+}
+
+:root .buscador-campo input::-webkit-search-cancel-button {
+    display: none;
+}
+
+:root .buscador-lista {
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 8px;
+    list-style: none;
+    overflow-y: auto;
+}
+
+:root .buscador-lista li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+:root .buscador-lista li.activo {
+    background: var(--acento-suave);
+}
+
+:root .buscador-lista .buscador-nada {
+    padding: 28px 12px;
+    justify-content: center;
+    color: var(--gris);
+    cursor: default;
+    font-size: .9rem;
+}
+
+:root .br-icono {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    background: var(--relleno) center / 16px no-repeat;
+}
+
+:root .br-tema .br-icono   { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237d8aa5'%3E%3Cpath d='M5 3h11l3 3v15H5z'/%3E%3C/svg%3E"); }
+:root .br-video .br-icono  { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237d8aa5'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E"); }
+:root .br-calc .br-icono   { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237d8aa5'%3E%3Cpath d='M6 2h12v20H6zm2 2v4h8V4zm0 7v2h2v-2zm4 0v2h2v-2zm-4 4v2h2v-2zm4 0v2h2v-2z'/%3E%3C/svg%3E"); }
+:root .br-pagina .br-icono { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237d8aa5'%3E%3Cpath d='M4 4h16v4H4zm0 6h16v10H4z'/%3E%3C/svg%3E"); }
+
+:root .br-texto {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+:root .br-texto strong {
+    font-size: .92rem;
+    font-weight: 600;
+    color: var(--tinta);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+:root .br-texto small {
+    margin-top: 2px;
+    font-size: .76rem;
+    color: var(--gris);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+:root .br-ir {
+    color: var(--gris);
+    opacity: 0;
+}
+
+:root .buscador-lista li.activo .br-ir {
+    opacity: 1;
+}
+
+:root .buscador-pie {
+    display: flex;
+    gap: 18px;
+    margin: 0;
+    padding: 10px 18px;
+    border-top: 1px solid var(--borde);
+    font-size: .72rem;
+    color: var(--gris);
+}
+
+:root .buscador-pie kbd {
+    margin-right: 3px;
+}
+
+@media (max-width: 720px) {
+    :root .buscador { padding: 10px; }
+    :root .buscador-caja { max-height: 82vh; }
+    :root .buscador-pie,
+    :root .buscador-campo kbd { display: none; }
+}
+
+
+/* ---------- Apartado abierto desde el buscador ---------- */
+
+:root details.destacado {
+    animation: resaltar 2.2s ease;
+}
+
+@keyframes resaltar {
+    0%, 30% { box-shadow: 0 0 0 3px var(--acento-suave), 0 0 0 1px var(--acento); }
+    100%    { box-shadow: var(--sombra); }
+}
+
+
+/* ---------- Botón volver arriba ---------- */
+
+:root .volver-arriba {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 900;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--borde);
+    border-radius: 50%;
+    background: var(--tarjeta);
+    box-shadow: var(--sombra-hover);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease, border-color .15s ease;
+}
+
+:root .volver-arriba.activo {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+:root .volver-arriba:hover {
+    border-color: var(--acento);
+}
+
+:root .volver-arriba svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--tinta);
+}
+
+
+/* ---------- Aparición suave al hacer scroll ---------- */
+
+:root .revelar {
+    opacity: 0;
+    transform: translateY(14px);
+    transition-property: opacity, transform;
+    transition-duration: .6s;
+    transition-timing-function: cubic-bezier(.2, .7, .2, 1);
+}
+
+:root .revelar.visible {
+    opacity: 1;
+    transform: none;
+}
+
+:root .quick-card.revelar.visible:hover,
+:root .pau-card.revelar.visible:hover {
+    transform: translateY(-2px);
+}
+
+:root .btn-tema.revelar.visible:hover {
+    transform: translateX(2px);
+}
+
+
+/* ---------- Foco de luz en tarjetas ---------- */
+
+:root :is(.quick-card, .pau-card, .btn-tema, .board, .news-card, .video-section,
+          .aviso-examen, .curiosidades, .game-card, .examen-prox, .tema, .recurso) {
+    background-image: radial-gradient(
+        420px circle at var(--mx, -999px) var(--my, -999px),
+        var(--foco, rgba(31, 58, 110, .06)),
+        transparent 45%
+    );
+}
+
+
+/* #########################################################
+   ##                                                     ##
+   ##   MODO NOCHE                                         ##
+   ##   (el modo por defecto; el botón ☀ vuelve al claro)  ##
+   ##                                                     ##
+######################################################### */
+
+:root[data-tema="noche"] {
+    color-scheme: dark;
+
+    --tinta: #edf1fa;
+    --tinta-2: #b4bdd1;
+    --gris: #8590a8;
+    --gris-claro: #5e6981;
+    --papel: #070b16;
+    --tarjeta: rgba(255, 255, 255, .035);
+    --borde: rgba(255, 255, 255, .09);
+    --borde-suave: rgba(255, 255, 255, .06);
+    --relleno: rgba(255, 255, 255, .055);
+
+    --azul: #82a8ff;
+    --azul-suave: rgba(130, 168, 255, .14);
+    --granate: #f3a86a;
+    --granate-suave: rgba(243, 168, 106, .14);
+    --oro: #d8bd85;
+
+    --acento: var(--azul);
+    --acento-suave: var(--azul-suave);
+
+    --foco: rgba(130, 168, 255, .10);
+
+    --sombra: 0 1px 0 rgba(255, 255, 255, .04) inset, 0 10px 30px rgba(0, 0, 0, .25);
+    --sombra-hover: 0 1px 0 rgba(255, 255, 255, .06) inset, 0 18px 44px rgba(0, 0, 0, .4);
+
+    --solido: #0d1324;           /* tarjetas que necesitan fondo opaco */
+}
+
+:root[data-tema="noche"][data-curso="2"] {
+    --acento: var(--granate);
+    --acento-suave: var(--granate-suave);
+    --foco: rgba(243, 168, 106, .09);
+}
+
+
+/* ---------- Fondo: aurora y cuadrícula ---------- */
+
+:root[data-tema="noche"] body {
+    background: #070b16;
+    color: var(--tinta);
+}
+
+:root[data-tema="noche"] body::before,
+:root[data-tema="noche"] body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+:root[data-tema="noche"] body::before {
+    background:
+        radial-gradient(40vw 32vw at 12% 8%,  rgba(88, 120, 255, .20), transparent 70%),
+        radial-gradient(36vw 30vw at 88% 14%, rgba(150, 90, 255, .14), transparent 70%),
+        radial-gradient(44vw 34vw at 70% 92%, rgba(40, 170, 200, .10), transparent 70%);
+    filter: blur(10px);
+    animation: aurora 26s ease-in-out infinite alternate;
+}
+
+:root[data-tema="noche"][data-curso="2"] body::before {
+    background:
+        radial-gradient(40vw 32vw at 12% 8%,  rgba(243, 140, 90, .14), transparent 70%),
+        radial-gradient(36vw 30vw at 88% 14%, rgba(150, 90, 255, .12), transparent 70%),
+        radial-gradient(44vw 34vw at 70% 92%, rgba(88, 120, 255, .10), transparent 70%);
+}
+
+:root[data-tema="noche"] body::after {
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .028) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent 75%);
+    mask-image: linear-gradient(to bottom, #000, transparent 75%);
+}
+
+@keyframes aurora {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(-3%, 2%, 0) scale(1.06); }
+    100% { transform: translate3d(2%, -2%, 0) scale(1.02); }
+}
+
+
+/* ---------- Menú ---------- */
+
+:root[data-tema="noche"] #menu-container {
+    background: rgba(7, 11, 22, .72);
+    border-bottom-color: rgba(255, 255, 255, .07);
+}
+
+:root[data-tema="noche"] .menu-contenido > a:hover,
+:root[data-tema="noche"] .menu-contenido .dropdown-btn:hover,
+:root[data-tema="noche"] .menu-dropdown.abierto .dropdown-btn {
+    background: rgba(255, 255, 255, .06);
+}
+
+:root[data-tema="noche"] .dropdown-content {
+    background: rgba(14, 20, 38, .96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+}
+
+@media (max-width: 1100px) {
+    :root[data-tema="noche"] .dropdown-content {
+        background: transparent;
+        box-shadow: none;
+    }
+}
+
+:root[data-tema="noche"] .menu-dropdown:nth-of-type(1) .dropdown-content a:hover { color: var(--azul); }
+:root[data-tema="noche"] .menu-dropdown:nth-of-type(2) .dropdown-content a:hover { color: var(--granate); }
+
+
+/* ---------- Tarjetas de cristal ---------- */
+
+:root[data-tema="noche"] :is(.hero-apple, .quick-card, .board, .news-card, .pau-card, .btn-tema,
+     .aviso-examen, .curiosidades, .video-section, .video-card, .tema, .game-card, .examen-prox,
+     .send-reel-box, .banner, .acordeon, .menu-buscar, .menu-tema, .volver-arriba) {
+    background-color: var(--tarjeta);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+
+:root[data-tema="noche"] :is(.quick-card, .pau-card, .btn-tema, .video-section, .tema, .game-card):hover {
+    border-color: rgba(255, 255, 255, .18);
+}
+
+:root[data-tema="noche"] .volver-arriba {
+    background-color: rgba(14, 20, 38, .9);
+}
+
+
+/* ---------- Portada ---------- */
+
+:root[data-tema="noche"] .hero-apple {
+    border-color: rgba(255, 255, 255, .1);
+    background-image:
+        radial-gradient(120% 90% at 50% 0%, rgba(130, 168, 255, .12), transparent 60%);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+
+:root[data-tema="noche"] .hero-apple::before {
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
+}
+
+:root[data-tema="noche"] .title-gradient {
+    background: linear-gradient(180deg, #ffffff 30%, #b9c6e8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+:root[data-tema="noche"] .hero-curva {
+    color: #9fbaff;
+    opacity: .5;
+}
+
+:root[data-tema="noche"] .hero-curva .hc-linea {
+    filter: drop-shadow(0 0 6px rgba(140, 175, 255, .8));
+}
+
+:root[data-tema="noche"] .accent-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--azul) 30%, var(--granate) 70%, transparent);
+    box-shadow: 0 0 18px rgba(130, 168, 255, .6);
+}
+
+:root[data-tema="noche"] .quick-card .icon {
+    box-shadow: inset 0 0 0 1px rgba(130, 168, 255, .2), 0 0 24px rgba(130, 168, 255, .12);
+}
+
+:root[data-tema="noche"] .quick-card .icon-2bach {
+    box-shadow: inset 0 0 0 1px rgba(243, 168, 106, .22), 0 0 24px rgba(243, 168, 106, .12);
+}
+
+:root[data-tema="noche"] .quick-card .icon-calc svg,
+:root[data-tema="noche"] .quick-card .icon-pau svg,
+:root[data-tema="noche"] .quick-card .icon-directrices svg {
+    fill: var(--tinta-2);
+}
+
+:root[data-tema="noche"] .quick-card .icon-calc,
+:root[data-tema="noche"] .quick-card .icon-pau,
+:root[data-tema="noche"] .quick-card .icon-directrices {
+    box-shadow: inset 0 0 0 1px var(--borde);
+}
+
+:root[data-tema="noche"] .fecha {
+    background: transparent;
+}
+
+:root[data-tema="noche"] .nav-btn {
+    background: transparent;
+    color: var(--tinta);
+}
+
+:root[data-tema="noche"] .nav-btn:hover {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: #070b16;
+}
+
+:root[data-tema="noche"] .loader {
+    border-color: rgba(255, 255, 255, .1);
+    border-top-color: var(--azul);
+}
+
+:root[data-tema="noche"] .examen-prox::before {
+    box-shadow: 0 0 16px var(--azul);
+}
+
+:root[data-tema="noche"] .examen-prox[data-curso-card="2"]::before {
+    box-shadow: 0 0 16px var(--granate);
+}
+
+:root[data-tema="noche"] .ep-cuenta strong,
+:root[data-tema="noche"] .contador-examen .tiempo span,
+:root[data-tema="noche"] .tiempo span {
+    text-shadow: 0 0 18px rgba(160, 190, 255, .35);
+}
+
+
+/* ---------- Temas ---------- */
+
+:root[data-tema="noche"] .tema-header h1 {
+    background: linear-gradient(180deg, #ffffff 30%, #c3cde6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+:root[data-tema="noche"] .aviso-examen {
+    border-top-color: var(--acento);
+    box-shadow: 0 -1px 24px -8px var(--acento), var(--sombra);
+}
+
+:root[data-tema="noche"] .contador-examen .tiempo,
+:root[data-tema="noche"] .tiempo {
+    background: rgba(255, 255, 255, .04);
+    border-color: rgba(255, 255, 255, .08);
+}
+
+:root[data-tema="noche"] #barra-progreso {
+    box-shadow: 0 0 12px var(--acento);
+}
+
+:root[data-tema="noche"] .btn-deshabilitado,
+:root[data-tema="noche"] .btn-tema.btn-deshabilitado {
+    background-color: rgba(255, 255, 255, .02);
+    opacity: .5;
+}
+
+
+/* ---------- Vídeos, calculadoras y exámenes ---------- */
+
+:root[data-tema="noche"] .videos-icon {
+    background: var(--acento);
+    color: #070b16;
+    box-shadow: 0 0 24px var(--acento-suave);
+}
+
+:root[data-tema="noche"] .video-section[open] {
+    box-shadow: 0 0 0 1px var(--acento-suave), 0 20px 50px rgba(0, 0, 0, .35);
+}
+
+:root[data-tema="noche"] .video-section summary:hover {
+    background: rgba(255, 255, 255, .03);
+}
+
+:root[data-tema="noche"] .video-container {
+    background: #000;
+}
+
+:root[data-tema="noche"] .btn-youtube:hover,
+:root[data-tema="noche"] .btn-drive:hover,
+:root[data-tema="noche"] .btn-video-movil:hover {
+    background: var(--tinta);
+    border-color: var(--tinta);
+    color: #070b16;
+}
+
+:root[data-tema="noche"] .cabecera-icono {
+    background: var(--azul-suave);
+    box-shadow: inset 0 0 0 1px rgba(130, 168, 255, .3);
+}
+
+:root[data-tema="noche"] .recurso {
+    background: rgba(255, 255, 255, .03);
+}
+
+:root[data-tema="noche"] .recurso:hover {
+    background: rgba(255, 255, 255, .06);
+}
+
+
+/* ---------- Juegos, reels y cumpleaños ---------- */
+
+:root[data-tema="noche"] .games-header h1,
+:root[data-tema="noche"] .titulo-reels,
+:root[data-tema="noche"] .reels-header h1,
+:root[data-tema="noche"] .titulo-cumple {
+    background: linear-gradient(180deg, #ffffff 30%, #c3cde6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+:root[data-tema="noche"] .game-card::before {
+    background: linear-gradient(90deg, var(--azul), var(--granate));
+}
+
+:root[data-tema="noche"] .game-button,
+:root[data-tema="noche"] .send-reel-button,
+:root[data-tema="noche"] .app-button,
+:root[data-tema="noche"] .video-controls button,
+:root[data-tema="noche"] .instagram-controls button,
+:root[data-tema="noche"] .tiktok-controls button {
+    background: #edf1fa;
+    color: #070b16;
+}
+
+:root[data-tema="noche"] .game-button:hover,
+:root[data-tema="noche"] .send-reel-button:hover,
+:root[data-tema="noche"] .app-button:hover,
+:root[data-tema="noche"] .video-controls button:hover,
+:root[data-tema="noche"] .instagram-controls button:hover,
+:root[data-tema="noche"] .tiktok-controls button:hover {
+    background: var(--azul);
+    color: #070b16;
+}
+
+:root[data-tema="noche"] .game-button.locked-button {
+    background: rgba(255, 255, 255, .06);
+    color: var(--gris);
+}
+
+
+/* ---------- Pie ---------- */
+
+:root[data-tema="noche"] .footer {
+    background: rgba(3, 6, 14, .85);
+    border-top: 1px solid rgba(255, 255, 255, .07);
+}
+
+:root[data-tema="noche"] .footer::before {
+    background: linear-gradient(90deg, transparent, var(--azul) 30%, var(--granate) 70%, transparent);
+    height: 1px;
+}
+
+:root[data-tema="noche"] .footer-app:hover {
+    color: #070b16;
+}
+
+:root[data-tema="noche"] .buscador-fondo {
+    background: rgba(0, 0, 0, .6);
+}
+
+:root[data-tema="noche"] .buscador-caja {
+    background: rgba(12, 18, 34, .97);
+    border-color: rgba(255, 255, 255, .1);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, .6), 0 0 0 1px rgba(130, 168, 255, .08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root[data-tema="noche"] body::before { animation: none; }
+    :root .hero-curva .hc-linea { stroke-dashoffset: 0; }
+    :root .hero-curva .hc-area { opacity: 1; }
+}
+
+
+/* ---------- Modo noche: páginas con estilos propios ---------- */
+
+/* Exámenes */
+:root[data-tema="noche"] .tema .contenido {
+    background: transparent;
+}
+
+:root[data-tema="noche"] .tema .flecha {
+    background: rgba(255, 255, 255, .06);
+    color: var(--tinta-2);
+}
+
+:root[data-tema="noche"] .recurso.recurso,
+:root[data-tema="noche"] .recurso.examen,
+:root[data-tema="noche"] .recurso.solucion {
+    background-color: rgba(255, 255, 255, .03);
+    border-color: var(--borde);
+    color: var(--tinta);
+}
+
+:root[data-tema="noche"] .recurso.bloqueado {
+    background-color: rgba(255, 255, 255, .015);
+    border-color: var(--borde-suave);
+}
+
+:root[data-tema="noche"] .recurso .recurso-texto strong { color: var(--tinta); }
+:root[data-tema="noche"] .recurso .recurso-texto small  { color: var(--gris); }
+:root[data-tema="noche"] .recurso.bloqueado .recurso-texto strong,
+:root[data-tema="noche"] .recurso.bloqueado .recurso-texto small { color: var(--gris-claro); }
+
+:root[data-tema="noche"] .recurso .recurso-icono {
+    background: var(--azul-suave);
+    color: var(--azul);
+}
+
+:root[data-tema="noche"] .recurso.solucion .recurso-icono {
+    background: rgba(110, 220, 170, .12);
+    color: #7fdcb1;
+}
+
+/* Reels */
+:root[data-tema="noche"] .send-reel-text strong { color: var(--tinta); }
+:root[data-tema="noche"] .send-reel-text span   { color: var(--gris); }
+
+:root[data-tema="noche"] .video-comment {
+    background: transparent;
+    color: var(--tinta-2);
+}
+
+/* Cumpleaños */
+:root[data-tema="noche"][data-pagina="cumpleanos"] body {
+    background: #070b16;
+    color: var(--tinta);
+}
+
+:root[data-tema="noche"] .titulo-cumple.titulo-cumple {
+    background: rgba(255, 255, 255, .04);
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--tinta);
+    -webkit-text-fill-color: currentColor;
+    border-color: var(--borde);
+}
+
+:root[data-tema="noche"] .time-box.time-box {
+    background: rgba(255, 255, 255, .05);
+    border-color: var(--borde);
+}
+
+:root[data-tema="noche"] .time-box strong { color: var(--tinta); }
+:root[data-tema="noche"] .time-box span   { color: var(--gris); }
+
+:root[data-tema="noche"] .cumple-lista.cumple-lista,
+:root[data-tema="noche"] .cumple.cumple {
+    background: rgba(255, 255, 255, .03);
+    border-color: var(--borde-suave);
+    color: var(--tinta-2);
+}
+
+:root[data-tema="noche"] .cumple .nombre { color: var(--tinta); }
+:root[data-tema="noche"] .cumple .fecha  { color: var(--granate); }
+:root[data-tema="noche"] .mensaje-extra,
+:root[data-tema="noche"] .subtitulo-cumple,
+:root[data-tema="noche"] .frase-secundaria { color: var(--tinta-2); }
+
+
+/* ---------- Ajustes de la portada ---------- */
+
+:root .hero-curva {
+    height: 52%;
+}
+
+:root .hero-curva .hc-area {
+    animation-name: aparecer-suave;
+}
+
+@keyframes aparecer-suave { to { opacity: .45; } }
+
+:root[data-tema="noche"] .hero-curva {
+    opacity: .38;
+}
+
+:root .titulo-pau,
+:root .titulo-accesos {
+    width: auto;
+    max-width: none;
+}
+
+:root .examen-prox {
+    display: flex;
+    flex-direction: column;
+}
+
+:root .examen-prox .ep-vacio + .ep-fecha {
+    margin-bottom: 0;
 }
