@@ -47,10 +47,10 @@
     function aplicarTema(tema) {
         html.setAttribute("data-tema", tema);
         var meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute("content", tema === "noche" ? "#070b16" : "#14213d");
+        if (meta) meta.setAttribute("content", tema === "noche" ? "#0b0d17" : "#f4f4f7");
     }
 
-    aplicarTema(leer("tema-web") === "claro" ? "claro" : "noche");
+    aplicarTema(leer("tema-web") === "noche" ? "noche" : "claro");
 
     var movimientoReducido =
         window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -176,7 +176,7 @@
 
     var SELECTOR_FOCO =
         ".quick-card, .pau-card, .btn-tema, .board, .news-card, .video-section, " +
-        ".aviso-examen, .curiosidades, .game-card, .examen-prox, .tema, .recurso";
+        ".aviso-examen, .curiosidades, .game-card, .b-tile, .tema, .recurso";
 
     document.addEventListener("pointermove", function (e) {
         var t = e.target.closest && e.target.closest(SELECTOR_FOCO);
@@ -191,7 +191,7 @@
 
     var SELECTOR_REVELAR =
         ".hero-apple, .titulo-accesos, .titulo-pau, .quick-card, .board-wrapper, .news-card, " +
-        ".pau-card, .proximos, .tema-header, .btn-tema, .aviso-examen, .curiosidades, " +
+        ".pau-card, .b-tile, .tema-header, .btn-tema, .aviso-examen, .curiosidades, " +
         ".videos-header, .video-section, .game-card, .tema, .cabecera";
 
     function prepararAparicion() {
@@ -661,14 +661,384 @@
 
 
     /* =====================================================
+       7. PORTADA: saludo, racha, próximo examen, reto
+          del día y calculadora de nota PAU
+    ===================================================== */
+
+    function hoyClave(d) {
+        d = d || new Date();
+        return d.getFullYear() + "-" + dosCifras(d.getMonth() + 1) + "-" + dosCifras(d.getDate());
+    }
+
+    function saludoYRacha() {
+
+        var ahora = new Date();
+        var h = ahora.getHours();
+        var saludo = h < 6 ? "Buenas noches" : h < 14 ? "Buenos días" : h < 21 ? "Buenas tardes" : "Buenas noches";
+        var fecha = ahora.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
+
+        var el = document.getElementById("saludo");
+        if (el) el.textContent = saludo + " · " + fecha;
+
+        /* Racha de días seguidos entrando en la web (solo en este dispositivo) */
+        var racha = { dia: "", n: 0 };
+        try { racha = JSON.parse(leer("racha-web") || "null") || racha; } catch (e) {}
+
+        var hoy = hoyClave(ahora);
+        var ayer = hoyClave(new Date(ahora.getTime() - 86400000));
+
+        if (racha.dia !== hoy) {
+            racha.n = racha.dia === ayer ? racha.n + 1 : 1;
+            racha.dia = hoy;
+            guardar("racha-web", JSON.stringify(racha));
+        }
+
+        var r = document.getElementById("racha");
+        if (r && racha.n >= 2) {
+            r.hidden = false;
+            r.textContent = racha.n + " días seguidos";
+            r.title = "Días seguidos que has entrado en la web desde este dispositivo";
+        }
+    }
+
+
+    /* Próximo examen: solo el más cercano que esté en cuenta atrás */
+
+    function proximoExamen() {
+
+        var caja = document.getElementById("proximo-examen");
+        var bento = document.getElementById("bento");
+        if (!caja) return;
+
+        cargarTemas().then(function (datos) {
+
+            var ahora = Date.now();
+            var futuros = datos.temas
+                .filter(function (t) { return t.fecha && t.fecha > ahora; })
+                .sort(function (a, b) { return a.fecha - b.fecha; });
+
+            if (!futuros.length) {
+                caja.hidden = true;
+                if (bento) bento.classList.add("sin-examen");
+                return;
+            }
+
+            var t = futuros[0];
+            var sig = futuros[1];
+
+            caja.setAttribute("data-curso-card", t.curso);
+            caja.innerHTML =
+                '<p class="b-etiqueta">Próximo examen · ' + t.curso + '.º Bach</p>' +
+                '<h2 class="b-examen-titulo"><a href="' + t.url + '">' + t.titulo + '</a></h2>' +
+                '<p class="b-examen-fecha">' + new Date(t.fecha).toLocaleString("es-ES", FORMATO_FECHA) + ' h</p>' +
+                '<div class="ep-cuenta" data-fecha="' + t.fecha + '">' +
+                '<div><strong>--</strong><small>días</small></div>' +
+                '<div><strong>--</strong><small>horas</small></div>' +
+                '<div><strong>--</strong><small>min</small></div>' +
+                '<div><strong>--</strong><small>seg</small></div>' +
+                '</div>' +
+                (sig ? '<p class="b-examen-sig">Después: ' + sig.titulo.replace(/^Tema\s+\d+\s*:\s*/i, "") + ' · ' +
+                    new Date(sig.fecha).toLocaleDateString("es-ES", { day: "numeric", month: "long" }) + '</p>' : "");
+
+            caja.hidden = false;
+            if (bento) bento.classList.remove("sin-examen");
+            actualizarCuentas();
+
+        }).catch(function () {
+            caja.hidden = true;
+            if (bento) bento.classList.add("sin-examen");
+        });
+    }
+
+
+    /* Reto del día: una pregunta distinta cada día */
+
+    var RETOS = [
+        ["Si A es una matriz 2×3 y B es 3×4, ¿qué dimensión tiene A·B?", ["3×3", "2×4", "4×2", "No se pueden multiplicar"], 1,
+         "Se multiplican filas de A por columnas de B: el resultado tiene las filas de A (2) y las columnas de B (4)."],
+        ["¿Cuánto vale el determinante de la matriz (2 1 / 4 3)?", ["2", "10", "−2", "6"], 0,
+         "2·3 − 1·4 = 6 − 4 = 2."],
+        ["Una matriz cuadrada A tiene inversa si y solo si…", ["Es simétrica", "Su determinante es distinto de 0", "Tiene algún cero", "Su determinante es 1"], 1,
+         "A es invertible ⇔ |A| ≠ 0. Si |A| = 0, la matriz es singular."],
+        ["¿A qué es igual (A·B)ᵗ?", ["Aᵗ·Bᵗ", "Bᵗ·Aᵗ", "A·B", "(B·A)⁻¹"], 1,
+         "La traspuesta de un producto invierte el orden: (A·B)ᵗ = Bᵗ·Aᵗ."],
+        ["Un sistema con 3 incógnitas tiene rg(A) = rg(A*) = 2. ¿Cómo es?", ["Incompatible", "Compatible determinado", "Compatible indeterminado", "No se puede saber"], 2,
+         "Por Rouché-Frobenius: rangos iguales ⇒ compatible; como 2 < 3 incógnitas, tiene infinitas soluciones."],
+        ["En programación lineal, si la región factible está acotada, el óptimo se alcanza…", ["En el centro de la región", "En algún vértice de la región", "Siempre en el origen", "Fuera de la región"], 1,
+         "La función objetivo alcanza su máximo y su mínimo en vértices de la región factible (o en todo un lado entre dos vértices)."],
+        ["A y B son independientes, con P(A) = 0,5 y P(B) = 0,4. ¿Cuánto vale P(A∩B)?", ["0,9", "0,1", "0,2", "0,45"], 2,
+         "Si son independientes, P(A∩B) = P(A)·P(B) = 0,5·0,4 = 0,2."],
+        ["P(A) = 0,5, P(B) = 0,4 y P(A∩B) = 0,1. ¿Cuánto vale P(A∪B)?", ["0,9", "0,8", "1", "0,7"], 1,
+         "P(A∪B) = P(A) + P(B) − P(A∩B) = 0,5 + 0,4 − 0,1 = 0,8."],
+        ["¿Para qué sirve el teorema de Bayes?", ["Para sumar probabilidades incompatibles", "Para calcular la probabilidad de una causa sabiendo el resultado", "Para tipificar una normal", "Para calcular combinaciones"], 1,
+         "Bayes calcula probabilidades «a posteriori»: P(causa | resultado observado)."],
+        ["Si Z sigue una N(0, 1), ¿cuánto vale P(Z ≤ 0)?", ["0", "0,5", "1", "0,8413"], 1,
+         "La normal es simétrica respecto de su media, 0: deja la mitad de la probabilidad a cada lado."],
+        ["Lanzas una moneda dos veces. ¿Probabilidad de obtener al menos una cara?", ["1/2", "1/4", "3/4", "2/3"], 2,
+         "Por el contrario: 1 − P(ninguna cara) = 1 − 1/4 = 3/4."],
+        ["En una población N(μ, σ), la media muestral de muestras de tamaño n sigue…", ["N(μ, σ)", "N(μ, σ/√n)", "N(μ/n, σ)", "N(0, 1)"], 1,
+         "La media muestral tiene la misma media μ y una desviación típica menor: σ/√n."],
+        ["Con el mismo nivel de confianza, si aumentamos el tamaño de la muestra, el error máximo…", ["Aumenta", "Disminuye", "No cambia", "Se duplica"], 1,
+         "E = z·σ/√n: al crecer n, el denominador crece y el error disminuye."],
+        ["¿Qué valor crítico z(α/2) corresponde a un nivel de confianza del 95 %?", ["1,645", "1,96", "2,575", "0,95"], 1,
+         "Con 95 % de confianza, α = 0,05 y deja 0,025 en cada cola: z = 1,96."],
+        ["¿Cuánto vale el límite cuando x → ∞ de (3x² + 1)/(x² − 5)?", ["0", "∞", "3", "−1/5"], 2,
+         "Mismo grado arriba y abajo: el límite es el cociente de los coeficientes principales, 3/1 = 3."],
+        ["¿Cuál es la derivada de f(x) = x³?", ["3x²", "x²", "3x³", "x⁴/4"], 0,
+         "Regla de la potencia: (xⁿ)' = n·xⁿ⁻¹, así que (x³)' = 3x²."],
+        ["Si f'(a) = 0 y f''(a) > 0, en x = a la función tiene…", ["Un máximo relativo", "Un mínimo relativo", "Un punto de inflexión", "Una asíntota"], 1,
+         "Derivada nula y segunda derivada positiva (curva cóncava hacia arriba): mínimo relativo."],
+        ["¿Qué asíntota vertical tiene f(x) = 1/(x − 2)?", ["x = 0", "y = 2", "x = 2", "No tiene"], 2,
+         "El denominador se anula en x = 2 y el numerador no: ahí la función tiende a ±∞."],
+        ["¿Cuánto vale ∫ 2x dx?", ["2", "x² + C", "2x² + C", "x + C"], 1,
+         "Una primitiva de 2x es x², porque (x²)' = 2x. No olvides la constante C."],
+        ["¿Cuál es el área bajo f(x) = x entre x = 0 y x = 2?", ["1", "2", "4", "8"], 1,
+         "∫₀² x dx = [x²/2]₀² = 4/2 − 0 = 2. Es un triángulo de base 2 y altura 2."],
+        ["¿Cuál es la derivada de f(x) = e²ˣ?", ["e²ˣ", "2e²ˣ", "2x·e²ˣ", "e²ˣ/2"], 1,
+         "Regla de la cadena: (eᵘ)' = u'·eᵘ, con u = 2x y u' = 2."],
+        ["f es continua en [a, b] y f(a)·f(b) < 0. ¿Qué asegura el teorema de Bolzano?", ["Que f es derivable", "Que f tiene un máximo", "Que existe c en (a, b) con f(c) = 0", "Que f es creciente"], 2,
+         "Si cambia de signo y es continua, la gráfica tiene que cortar al eje X entre a y b."],
+        ["¿En qué valor de x tiene un mínimo f(x) = x² − 4x?", ["x = 0", "x = 4", "x = 2", "x = −2"], 2,
+         "f'(x) = 2x − 4 = 0 ⇒ x = 2, y f''(x) = 2 > 0: es un mínimo (el vértice de la parábola)."],
+        ["¿Cuál es la inversa de la matriz (1 0 / 0 2)?", ["(1 0 / 0 2)", "(1 0 / 0 1/2)", "(−1 0 / 0 −2)", "(0 1 / 2 0)"], 1,
+         "Para una matriz diagonal, la inversa tiene en la diagonal los inversos: 1 y 1/2."]
+    ];
+
+    function retoDelDia() {
+
+        var caja = document.getElementById("reto-dia");
+        if (!caja) return;
+
+        var hoy = new Date();
+        var n = Math.floor((Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()) - Date.UTC(2026, 0, 1)) / 86400000);
+        var reto = RETOS[((n % RETOS.length) + RETOS.length) % RETOS.length];
+        var clave = hoyClave(hoy);
+
+        var estado = {};
+        try { estado = JSON.parse(leer("reto-web") || "{}") || {}; } catch (e) {}
+
+        caja.innerHTML =
+            '<p class="b-etiqueta">Reto del día <span class="reto-aciertos" hidden></span></p>' +
+            '<p class="reto-pregunta"></p>' +
+            '<div class="reto-opciones"></div>' +
+            '<p class="reto-explicacion" hidden></p>';
+
+        caja.querySelector(".reto-pregunta").textContent = reto[0];
+
+        var opciones = caja.querySelector(".reto-opciones");
+        reto[1].forEach(function (texto, i) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "reto-opcion";
+            b.innerHTML = '<span class="reto-letra">' + "ABCD"[i] + '</span><span></span>';
+            b.lastChild.textContent = texto;
+            b.addEventListener("click", function () { responder(i, true); });
+            opciones.appendChild(b);
+        });
+
+        function pintarAciertos() {
+            var a = caja.querySelector(".reto-aciertos");
+            if (estado.aciertos > 0) {
+                a.hidden = false;
+                a.textContent = "· " + estado.aciertos + (estado.aciertos === 1 ? " acierto" : " aciertos");
+            }
+        }
+
+        function responder(i, nuevo) {
+            var botones = opciones.querySelectorAll(".reto-opcion");
+            botones.forEach(function (b, j) {
+                b.disabled = true;
+                if (j === reto[2]) b.classList.add("correcta");
+                else if (j === i) b.classList.add("fallo");
+            });
+            var acierto = i === reto[2];
+            var exp = caja.querySelector(".reto-explicacion");
+            exp.hidden = false;
+            exp.innerHTML = '<strong>' + (acierto ? "¡Correcto!" : "Casi…") + '</strong> ';
+            exp.appendChild(document.createTextNode(reto[3]));
+            caja.classList.add(acierto ? "acertado" : "fallado");
+
+            if (nuevo) {
+                estado.aciertos = (estado.aciertos || 0) + (acierto ? 1 : 0);
+                estado.dia = clave;
+                estado.elegida = i;
+                guardar("reto-web", JSON.stringify(estado));
+            }
+            pintarAciertos();
+        }
+
+        pintarAciertos();
+        if (estado.dia === clave && typeof estado.elegida === "number") responder(estado.elegida, false);
+    }
+
+
+    /* Calculadora de nota PAU (reglas de Andalucía) */
+
+    var calculadora = null;
+
+    function numero(v) {
+        if (v === "" || v === null || v === undefined) return null;
+        var n = parseFloat(String(v).replace(",", "."));
+        return isNaN(n) ? null : Math.max(0, Math.min(10, n));
+    }
+
+    function f3(n) {
+        return n.toLocaleString("es-ES", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+    }
+
+    function crearCalculadora() {
+
+        calculadora = document.createElement("div");
+        calculadora.className = "buscador calc-pau";
+        calculadora.setAttribute("role", "dialog");
+        calculadora.setAttribute("aria-modal", "true");
+        calculadora.setAttribute("aria-label", "Calculadora de nota PAU");
+
+        function campo(id, etiqueta, extra) {
+            return '<label class="cp-campo"><span>' + etiqueta + '</span>' +
+                '<input id="' + id + '" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off">' + (extra || "") + '</label>';
+        }
+
+        function peso(id, def) {
+            return '<select id="' + id + '" aria-label="Ponderación">' +
+                '<option value="0"' + (def === 0 ? " selected" : "") + '>No pondera</option>' +
+                '<option value="0.1"' + (def === 0.1 ? " selected" : "") + '>× 0,1</option>' +
+                '<option value="0.2"' + (def === 0.2 ? " selected" : "") + '>× 0,2</option></select>';
+        }
+
+        calculadora.innerHTML =
+            '<div class="buscador-fondo"></div>' +
+            '<div class="buscador-caja cp-caja">' +
+            '<div class="cp-cabecera"><div><p class="b-etiqueta">PAU · Andalucía</p><h2>Calcula tu nota</h2></div>' +
+            '<button type="button" class="cp-cerrar" aria-label="Cerrar">×</button></div>' +
+            '<div class="cp-cuerpo">' +
+            '<section><h3>1 · Bachillerato</h3>' + campo("cp-bach", "Nota media de Bachillerato") + '</section>' +
+            '<section><h3>2 · Fase de acceso</h3><div class="cp-rejilla">' +
+            campo("cp-lengua", "Lengua Castellana y Literatura II") +
+            campo("cp-historia", "Historia de España o Filosofía") +
+            campo("cp-idioma", "Lengua extranjera II") +
+            campo("cp-mates", "Matemáticas Aplicadas a las CCSS II") +
+            '</div></section>' +
+            '<section><h3>3 · Fase de admisión <small>(opcional)</small></h3>' +
+            '<p class="cp-ayuda">Cuentan como mucho las dos materias que más sumen, aprobadas con un 5 o más. Las ponderaciones de cada grado están en «Información PAU».</p>' +
+            '<div class="cp-fila"><span>Matemáticas CCSS II (de la fase de acceso)</span>' + peso("cp-pm", 0.2) + '</div>' +
+            '<div class="cp-fila">' + campo("cp-m1", "Otra materia") + peso("cp-p1", 0.2) + '</div>' +
+            '<div class="cp-fila">' + campo("cp-m2", "Otra materia") + peso("cp-p2", 0.1) + '</div>' +
+            '</section>' +
+            '</div>' +
+            '<div class="cp-resultado">' +
+            '<div class="cp-nota"><small>Nota de acceso</small><strong id="cp-acceso">—</strong><span>sobre 10</span></div>' +
+            '<div class="cp-nota cp-nota-adm"><small>Nota de admisión</small><strong id="cp-admision">—</strong><span>sobre 14</span></div>' +
+            '<p class="cp-mensaje" id="cp-mensaje">Rellena tus notas para ver el resultado.</p>' +
+            '</div>' +
+            '<p class="cp-aviso">Cálculo orientativo: 60 % media de Bachillerato + 40 % fase de acceso (mínimo 4); la nota de acceso debe llegar a 5. Admisión: + hasta dos materias × 0,1 o 0,2.</p>' +
+            '</div>';
+
+        document.body.appendChild(calculadora);
+
+        var ids = ["cp-bach", "cp-lengua", "cp-historia", "cp-idioma", "cp-mates", "cp-m1", "cp-m2", "cp-pm", "cp-p1", "cp-p2"];
+        var guardado = {};
+        try { guardado = JSON.parse(leer("calc-pau") || "{}") || {}; } catch (e) {}
+        ids.forEach(function (id) {
+            var el = calculadora.querySelector("#" + id);
+            if (guardado[id] !== undefined) el.value = guardado[id];
+            el.addEventListener("input", calcular);
+            el.addEventListener("change", calcular);
+        });
+
+        function v(id) { return calculadora.querySelector("#" + id).value; }
+
+        function calcular() {
+
+            var datos = {};
+            ids.forEach(function (id) { datos[id] = v(id); });
+            guardar("calc-pau", JSON.stringify(datos));
+
+            var bach = numero(v("cp-bach"));
+            var ex = ["cp-lengua", "cp-historia", "cp-idioma", "cp-mates"].map(function (id) { return numero(v(id)); });
+            var acc = calculadora.querySelector("#cp-acceso");
+            var adm = calculadora.querySelector("#cp-admision");
+            var msg = calculadora.querySelector("#cp-mensaje");
+            var res = calculadora.querySelector(".cp-resultado");
+
+            res.classList.remove("ok", "mal");
+
+            if (bach === null || ex.some(function (n) { return n === null; })) {
+                acc.textContent = "—";
+                adm.textContent = "—";
+                msg.textContent = "Rellena la media de Bachillerato y las cuatro notas de la fase de acceso.";
+                return;
+            }
+
+            var fase = Math.round((ex[0] + ex[1] + ex[2] + ex[3]) / 4 * 1000) / 1000;
+            var acceso = 0.6 * bach + 0.4 * fase;
+
+            acc.textContent = f3(acceso);
+
+            if (fase < 4) {
+                adm.textContent = "—";
+                msg.textContent = "La fase de acceso sale " + f3(fase) + ": necesitas al menos un 4 de media en los cuatro exámenes.";
+                res.classList.add("mal");
+                return;
+            }
+
+            if (acceso < 5) {
+                adm.textContent = "—";
+                msg.textContent = "La nota de acceso no llega a 5. Fase de acceso: " + f3(fase) + ".";
+                res.classList.add("mal");
+                return;
+            }
+
+            var candidatas = [
+                { n: ex[3], p: +v("cp-pm") },
+                { n: numero(v("cp-m1")), p: +v("cp-p1") },
+                { n: numero(v("cp-m2")), p: +v("cp-p2") }
+            ].filter(function (c) { return c.n !== null && c.n >= 5 && c.p > 0; })
+             .map(function (c) { return c.n * c.p; })
+             .sort(function (a, b) { return b - a; })
+             .slice(0, 2);
+
+            var extra = candidatas.reduce(function (s, x) { return s + x; }, 0);
+
+            adm.textContent = f3(acceso + extra);
+            msg.textContent = "¡Aprobada! Fase de acceso: " + f3(fase) +
+                (extra > 0 ? " · La fase de admisión suma " + f3(extra) + " puntos." : " · Añade materias de admisión para subir hasta 14.");
+            res.classList.add("ok");
+        }
+
+        calculadora.querySelector(".buscador-fondo").addEventListener("click", cerrarCalculadora);
+        calculadora.querySelector(".cp-cerrar").addEventListener("click", cerrarCalculadora);
+        calculadora.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarCalculadora(); });
+
+        calcular();
+    }
+
+    function abrirCalculadora() {
+        if (!calculadora) crearCalculadora();
+        calculadora.classList.add("abierto");
+        document.documentElement.classList.add("sin-scroll");
+        setTimeout(function () { var c = calculadora.querySelector("input"); if (c && !c.value) c.focus(); }, 40);
+    }
+
+    function cerrarCalculadora() {
+        if (!calculadora) return;
+        calculadora.classList.remove("abierto");
+        document.documentElement.classList.remove("sin-scroll");
+    }
+
+
+    /* =====================================================
        ARRANQUE
     ===================================================== */
 
     document.addEventListener("DOMContentLoaded", function () {
 
         if (pagina === "inicio") {
-            dibujarCurva();
-            proximosExamenes();
+            saludoYRacha();
+            proximoExamen();
+            retoDelDia();
+            var bc = document.getElementById("abrir-calculadora");
+            if (bc) bc.addEventListener("click", abrirCalculadora);
         }
 
         botonArriba();

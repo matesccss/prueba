@@ -4,8 +4,8 @@
   "description": "Web de Matemáticas",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f7f5f0",
-  "theme_color": "#14213d",
+  "background_color": "#f4f4f7",
+  "theme_color": "#f4f4f7",
   "orientation": "portrait-primary",
   "icons": [
     {

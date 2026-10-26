@@ -24,8 +24,8 @@
     <script src="actualizar.js" defer></script>
 
 
-    <link rel="stylesheet" href="elegante.css?v=4">
-    <script src="elegante.js?v=4"></script>
+    <link rel="stylesheet" href="elegante.css?v=5">
+    <script src="elegante.js?v=5"></script>
 
 </head>
 
@@ -52,49 +52,67 @@
 
     <main>
 
-        <!-- ENCABEZADO -->
+        <!-- =====================================================
+             PANEL PRINCIPAL (tipo "bento")
+             Los bloques con id se rellenan solos desde elegante.js
+        ====================================================== -->
 
-        <div class="hero-apple">
+        <section class="bento" id="bento">
 
-            <div class="hero-content">
+            <!-- SALUDO -->
 
-                <p class="hero-eyebrow">IES El Molinillo · Departamento de Matemáticas</p>
+            <article class="b-tile b-hola">
 
-                <h1 class="title-gradient">
-                 Matemáticas Aplicadas a las Ciencias Sociales</h1>
+                <div class="b-hola-texto">
 
-                <div class="line"></div>
+                    <p class="b-eyebrow">
+                        <span id="saludo">Hola</span>
+                        <span class="b-racha" id="racha" hidden></span>
+                    </p>
 
-                <h2>Bachillerato · Curso 2026-2027</h2>
+                    <h1 class="b-titulo">Matemáticas Aplicadas a las Ciencias Sociales</h1>
 
-                <p id="fraseHero"></p>
+                    <p class="b-sub">Bachillerato · Curso 2026-2027 · IES El Molinillo</p>
 
-            </div>
+                    <p id="fraseHero" class="b-frase"></p>
 
-            <div class="accent-line"></div>
+                </div>
 
-        </div>
+            </article>
 
 
-        <!-- PRÓXIMOS EXÁMENES (se rellena solo con las fechas de cada tema) -->
+            <!-- PRÓXIMO EXAMEN (solo aparece si hay alguno en cuenta atrás) -->
 
-        <section class="proximos" aria-label="Próximos exámenes">
+            <article class="b-tile b-examen" id="proximo-examen" hidden></article>
 
-            <div class="titulo-accesos titulo-proximos">
 
-                <h2>Próximos exámenes</h2>
+            <!-- RETO DEL DÍA -->
 
-                <div class="linea-accesos"></div>
+            <article class="b-tile b-reto" id="reto-dia">
 
-            </div>
+                <p class="b-etiqueta">Reto del día</p>
 
-            <div id="proximos-examenes" class="proximos-grid">
+                <p class="reto-pregunta">Cargando…</p>
 
-                <article class="examen-prox esqueleto"></article>
+            </article>
 
-                <article class="examen-prox esqueleto"></article>
 
-            </div>
+            <!-- CALCULADORA DE NOTA PAU -->
+
+            <article class="b-tile b-nota">
+
+                <p class="b-etiqueta">Herramienta</p>
+
+                <h2 class="b-nota-titulo">¿Qué nota necesito?</h2>
+
+                <p class="b-nota-texto">Calcula tu nota de acceso y de admisión a la universidad con las reglas de la PAU en Andalucía.</p>
+
+                <button class="b-boton" type="button" id="abrir-calculadora">
+                    Calcular mi nota
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l7 7-7 7-1.4-1.4 4.6-4.6H4v-2h12.2l-4.6-4.6z"/></svg>
+                </button>
+
+            </article>
 
         </section>
 

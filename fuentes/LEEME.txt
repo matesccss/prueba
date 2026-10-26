@@ -1,8 +1,9 @@
 Fuentes tipográficas de la web
 
-- Inter (c) The Inter Project Authors - https://github.com/rsms/inter
-- Lora (c) The Lora Project Authors - https://github.com/cyrealtype/Lora-Cyrillic
+- Poppins (c) Indian Type Foundry - títulos
+- Inter (c) The Inter Project Authors - texto
+- Lora (c) The Lora Project Authors - citas
 
-Ambas se distribuyen bajo la SIL Open Font License 1.1 (https://openfontlicense.org),
+Las tres se distribuyen bajo la SIL Open Font License 1.1 (https://openfontlicense.org),
 que permite usarlas e incluirlas libremente en una web.
-Los archivos son subconjuntos (solo caracteres latinos) para que pesen poco.
+Son subconjuntos (solo caracteres latinos) para que pesen poco.
