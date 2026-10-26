@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta name="google-site-verification" content="GlAPUmqOcGEpPl8dBUzAiuJpEE4Qh0jj1oSgQpOOGdY" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="icons/icon.png">
+
+    <title>Matemáticas Aplicadas a las Ciencias Sociales</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="theme-color" content="#14213d">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Mates Molinillo">
+
+    <script src="actualizar.js" defer></script>
+
+
+    <link rel="stylesheet" href="elegante.css">
+    <script src="elegante.js"></script>
+
+</head>
+
+<body>
+
+    <div id="menu-container"></div>
+
+    <script>
+
+    fetch("menu.html", { cache: "no-store" })
+        .then(response => response.text())
+        .then(html => {
+
+            document.getElementById("menu-container").innerHTML = html;
+
+        })
+        .catch(error => {
+
+            console.error("Error cargando el menú:", error);
+
+        });
+
+    </script>
+
+    <main>
+
+        <!-- ENCABEZADO -->
+
+        <div class="hero-apple">
+
+            <div class="hero-content">
+
+                <p class="hero-eyebrow">IES El Molinillo · Departamento de Matemáticas</p>
+
+                <h1 class="title-gradient">
+                 Matemáticas Aplicadas a las Ciencias Sociales</h1>
+
+                <div class="line"></div>
+
+                <h2>Bachillerato · Curso 2026-2027</h2>
+
+                <p id="fraseHero"></p>
+
+            </div>
+
+            <div class="accent-line"></div>
+
+        </div>
+
+
+        <!-- ACCESOS RÁPIDOS -->
+
+        <div class="titulo-accesos">
+
+            <h2>Accesos rápidos</h2>
+
+            <div class="linea-accesos"></div>
+
+        </div>
+
+
+        <div class="quick-grid">
+
+
+            <!-- 1.º BACH -->
+
+            <a class="quick-card"
+               href="https://drive.google.com/file/d/1Md8pju9B6h5gl5am4h-ozlXWeL5AIvQz/view?usp=drive_link"
+               target="_blank">
+
+                <div class="icon icon-1bach">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M7 2v2H5a2 2 0 0 0-2 2v13a3 3 0 0 0 3 3h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8H5v9a1 1 0 0 0 1 1h13V10z"/>
+
+                    </svg>
+
+                </div>
+
+                <div class="title">1.º Bach</div>
+
+                <div class="subtitle">Temporalización</div>
+
+            </a>
+
+
+            <!-- 2.º BACH -->
+
+            <a class="quick-card"
+               href="https://drive.google.com/file/d/1LLvr1p5Yox0qOTy3Tsxwfi9yAITFt3Dz/view?usp=drive_link"
+               target="_blank">
+
+                <div class="icon icon-2bach">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M7 2v2H5a2 2 0 0 0-2 2v13a3 3 0 0 0 3 3h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8H5v9a1 1 0 0 0 1 1h13V10z"/>
+
+                    </svg>
+
+                </div>
+
+                <div class="title">2.º Bach</div>
+
+                <div class="subtitle">Temporalización</div>
+
+            </a>
+
+
+            <!-- EXÁMENES -->
+
+            <a class="quick-card"
+            href="examenes.html">
+
+                <div class="icon icon-examenes">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2 4h8v2H8V6zm0 4h8v2H8v-2zm0 4h5v2H8v-2z"/>
+
+                    </svg>
+
+                </div>
+
+                <div class="title">Exámenes del curso</div>
+
+                <div class="subtitle">Pruebas realizadas</div>
+
+            </a>
+
+
+            <!-- DIRECTRICES PAU -->
+
+            <a class="quick-card"
+               href="https://drive.google.com/file/d/1RwPA5Zam5Tl4eLnbQ79TgFIMpeJiW4_8/view?usp=drive_link"
+               target="_blank">
+
+                <div class="icon icon-directrices">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM8 12h8v2H8v-2zm0 4h8v2H8v-2z"/>
+
+                    </svg>
+
+                </div>
+
+                <div class="title">Directrices PAU</div>
+
+                <div class="subtitle">Curso 26/27</div>
+
+            </a>
+
+
+            <!-- FX-570 -->
+
+            <a class="quick-card"
+            href="calculadoras/calculadora570.html">
+
+                <div class="icon icon-calc">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2 3v3h6V5H9zm0 6h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"/>
+
+                    </svg>
+
+                </div>
+
+                <div class="title">Calculadora FX-570SP CW (BLANCA)</div>
+
+                <div class="subtitle">Vídeos y ayuda</div>
+
+            </a>
+
+
+            <!-- FX-991 -->
+
+            <a class="quick-card"
+            href="calculadoras/calculadora991.html">
+
+                <div class="icon icon-calc">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2 3v3h6V5H9zm0 6h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"/>
+
+                    </svg>
+
+                </div>
+
+                <div class="title">Calculadora FX-991</div>
+
+                <div class="subtitle">Vídeos y ayuda</div>
+
+            </a>
+
+
+            <!-- CLASSWIZ -->
+
+            <a class="quick-card"
+            href="calculadoras/calculadoraclasswiz.html">
+
+                <div class="icon icon-calc">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2 3v3h6V5H9zm0 6h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"/>
+
+                    </svg>
+
+                </div>
+
+                <div class="title">Calculadora Classwiz</div>
+
+                <div class="subtitle">Vídeos y ayuda</div>
+
+            </a>
+
+
+            <!-- EXÁMENES PAU -->
+
+            <a class="quick-card"
+               href="https://www.emestrada.org/"
+               target="_blank">
+
+                <div class="icon icon-pau">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM8 12h8v2H8v-2zm0 4h8v2H8v-2z"/>
+
+                    </svg>
+
+                </div>
+
+                <div class="title">Exámenes PAU</div>
+
+                <div class="subtitle">EMESTRADA</div>
+
+            </a>
+
+
+        </div>
+
+
+        <!-- NOVEDADES + TENDENCIAS -->
+
+        <div class="inicio-paneles">
+
+
+            <!-- NOVEDADES -->
+
+            <div class="board-wrapper">
+
+                <div class="board">
+
+                    <div class="board-header">
+
+                        
+
+                        <h2>Novedades</h2>
+
+                    </div>
+
+                    <ul>
+
+                        <li>
+
+                            <div class="fecha">
+
+                                <span class="dia">18</span>
+
+                                <span class="mes">SEP</span>
+
+                            </div>
+
+                            <div class="contenido">
+
+                                <strong>Examen Tema 1</strong>
+
+                                <p>El miércoles 7 de octubre.</p>
+
+                            </div>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOY EN TENDENCIAS -->
+
+            <div class="news-card">
+
+                <div class="news-header">
+
+                    
+
+                    <h2>Hoy en Tendencias</h2>
+
+                </div>
+
+                <div id="noticia" class="news-body">
+
+                    <div class="loader"></div>
+
+                    <div class="loading">
+                        Cargando noticias...
+                    </div>
+
+                </div>
+
+                <div class="news-footer">
+
+                    <button id="anterior"
+                            class="nav-btn"
+                            style="display:none;">
+                        ‹
+                    </button>
+
+                    <span id="contador"
+                          style="display:none;">
+                        1 / 1
+                    </span>
+
+                    <button id="siguiente"
+                            class="nav-btn"
+                            style="display:none;">
+                        ›
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- PAU -->
+        <div class="titulo-pau">
+        <h2>Información PAU</h2>
+        <div class="linea-pau"></div>
+        </div>
+        <div class="pau-grid">
+
+            <a class="pau-card"
+               href="https://www.juntadeandalucia.es/economiaconocimientoempresasyuniversidad/sguit/?q=grados&d=g_b_procedimiento_acceso.php"
+               target="_blank">
+
+                <div class="pau-icon">
+                    📄
+                </div>
+
+                <div class="pau-info">
+
+                    <div class="pau-title">
+                        PAU
+                    </div>
+
+                    <div class="pau-subtitle">
+                        Consulta la estructura del examen, criterios de evaluación y toda la información oficial.
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <a class="pau-card"
+               href="https://www.juntadeandalucia.es/economiaconocimientoempresasyuniversidad/sguit/?q=grados&d=g_not_cor_anteriores_top.php"
+               target="_blank">
+
+                <div class="pau-icon">
+                    📊
+                </div>
+
+                <div class="pau-info">
+
+                    <div class="pau-title">
+                        Notas de corte
+                    </div>
+
+                    <div class="pau-subtitle">
+                        Consulta las notas de acceso actualizadas de los distintos grados universitarios.
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        </main>
+
+<!-- FOOTER -->
+
+<div id="footer-container"></div>
+
+<script>
+
+fetch("footer.html", { cache: "no-store" })
+.then(response => response.text())
+.then(html => {
+
+    document.getElementById("footer-container").innerHTML = html;
+
+    const footer =
+        document.getElementById("footer-text");
+
+    if (!footer) return;
+
+    const frases = [
+
+        "Ser más chulo que un ocho → De los tranvías nº8 de Madrid, muy usados por los chulapos.",
+        "No tener pelos en la lengua → Imagen usada desde la Edad Media para expresar claridad al hablar.",
+        "Estar en Babia → Los reyes de León se retiraban a la comarca de Babia para descansar.",
+        "Tirar la toalla → Gesto del boxeo para rendirse y proteger al púgil.",
+        "Poner la mano en el fuego → Prueba medieval de inocencia.",
+        "Quedarse de piedra → De la mitología griega: Medusa petrificaba con la mirada.",
+        "Estar en las nubes → Expresión utilizada para describir distracción.",
+        "Costar un ojo de la cara → Expresión usada desde el Siglo de Oro.",
+        "Más vale tarde que nunca → Traducción del latín 'Potius sero quam numquam'.",
+        "Salir rana → Expresión relacionada con cuentos y expectativas frustradas.",
+        "Llorar como una Magdalena → Por las lágrimas de María Magdalena.",
+        "Dormir la mona → En el Siglo de Oro se llamaba 'mona' a la borrachera.",
+        "Armarse la de San Quintín → Por la batalla de San Quintín de 1557.",
+        "Meter la pata → Relacionado originalmente con la caza.",
+        "Irse por los cerros de Úbeda → Antigua expresión relacionada con una supuesta excusa medieval.",
+        "Dar calabazas → Antigua expresión relacionada con el rechazo.",
+        "Estar sin blanca → De la antigua moneda llamada 'blanca'.",
+        "Hablar por los codos → Viene del gesto de mover mucho los brazos al hablar.",
+        "Quedarse en blanco → Comparación con una pizarra completamente borrada.",
+        "Estar en números rojos → En contabilidad, las pérdidas se anotaban en rojo.",
+        "Salvarse por los pelos → Relacionado con antiguos rescates en el agua.",
+        "Dorar la píldora → Antiguamente se recubrían medicinas para hacerlas más fáciles de tomar.",
+        "Matar dos pájaros de un tiro → Refrán tradicional relacionado con la caza.",
+        "Coger el toro por los cuernos → Relacionado con afrontar una situación con valentía.",
+        "Agua pasada no mueve molino → Lo que ya pasó no puede recuperarse.",
+        "A caballo regalado no le mires el diente → Relacionado con comprobar la edad de los caballos.",
+        "Al mal tiempo, buena cara → Aconseja mantener una actitud positiva ante las dificultades.",
+        "Buscarle tres pies al gato → Buscar problemas donde no los hay.",
+        "Cambiar de chaqueta → Relacionado con cambiar de bando o de opinión.",
+        "Como anillo al dedo → Algo que encaja perfectamente.",
+        "Como pez en el agua → Sentirse completamente cómodo en un lugar.",
+        "Cortar por lo sano → Expresión procedente del ámbito médico.",
+        "De tal palo, tal astilla → Las características de los padres pueden reflejarse en sus hijos.",
+        "Donde dije digo, digo Diego → Cambiar de opinión o contradecirse.",
+        "El mundo es un pañuelo → Expresión que señala que el mundo es pequeño.",
+        "En boca cerrada no entran moscas → Aconseja hablar con prudencia.",
+        "Estar entre la espada y la pared → Encontrarse ante una situación difícil.",
+        "Hacer borrón y cuenta nueva → Empezar de nuevo dejando atrás lo anterior.",
+        "Ir al grano → Ir directamente a lo importante.",
+        "Morder el anzuelo → Caer en una trampa.",
+        "No hay mal que por bien no venga → Algo negativo puede acabar teniendo consecuencias positivas.",
+        "Ojo por ojo, diente por diente → Antigua expresión relacionada con la reciprocidad.",
+        "Pedir peras al olmo → Pedir algo imposible.",
+        "Ponerse las pilas → Espabilarse y ponerse en marcha.",
+        "Quemarse las pestañas → Estudiar o trabajar intensamente.",
+        "Ser pan comido → Algo muy fácil de hacer.",
+        "Ser uña y carne → Tener una relación muy estrecha.",
+        "Tener mala leche → Tener mal carácter.",
+        "Tirar la casa por la ventana → Gastar mucho dinero en una celebración.",
+        "Tomar el pelo → Engañar o burlarse de alguien.",
+        "Traer a alguien de cabeza → Provocar preocupación o problemas.",
+        "Vender la piel del oso antes de cazarlo → Dar algo por conseguido antes de tiempo.",
+        "Ver las estrellas → Sentir un dolor muy fuerte.",
+        "Zapatero a tus zapatos → Cada uno debe ocuparse de aquello que conoce.",
+        "Estar entre dos fuegos → Encontrarse en medio de dos peligros.",
+        "Poner los puntos sobre las íes → Ser preciso y dejar algo perfectamente claro.",
+        "Dar gato por liebre → Engañar ofreciendo algo distinto de lo prometido.",
+        "Ser harina de otro costal → Tratarse de una cuestión diferente.",
+        "A ojo de buen cubero → Calcular aproximadamente una cantidad.",
+        "Caer en saco roto → Algo que no produce ningún efecto.",
+        "No hay tutía → No hay solución.",
+        "No hay moros en la costa → No existe peligro aparente.",
+        "Estar hasta las narices → Estar completamente harto de algo."
+
+    ];
+
+
+    function cambiarFrase() {
+
+        footer.classList.remove("fade-in");
+        footer.classList.add("fade-out");
+
+        setTimeout(() => {
+
+            footer.innerText =
+                frases[
+                    Math.floor(
+                        Math.random() * frases.length
+                    )
+                ];
+
+            footer.classList.remove("fade-out");
+            footer.classList.add("fade-in");
+
+        }, 300);
+
+    }
+
+
+    /* PRIMERA FRASE */
+
+    footer.innerText =
+        frases[
+            Math.floor(
+                Math.random() * frases.length
+            )
+        ];
+
+    footer.classList.add("fade-in");
+
+
+    /* CAMBIAR CADA 15 SEGUNDOS */
+
+    setInterval(cambiarFrase, 15000);
+
+})
+.catch(error => {
+
+    console.error(
+        "Error cargando footer:",
+        error
+    );
+
+});
+
+</script>
+
+    <!-- SCRIPTS -->
+
+    <script>
+
+        
+        function pintarNoticias(data){
+
+            const contenedor =
+                document.getElementById("noticia");
+
+            const siguiente =
+                document.getElementById("siguiente");
+
+            const anterior =
+                document.getElementById("anterior");
+
+            const contador =
+                document.getElementById("contador");
+
+
+            if(!Array.isArray(data) || data.length === 0){
+
+                contenedor.innerHTML =
+                    "⚠️ No hay noticias disponibles.";
+
+                return;
+
+            }
+
+
+            let noticias = data;
+
+            let indice = 0;
+
+
+            function pintar(){
+
+                const titulo =
+                    document.createElement("a");
+
+                titulo.href =
+                    noticias[indice].link;
+
+                titulo.target =
+                    "_blank";
+
+                titulo.rel =
+                    "noopener";
+
+                titulo.textContent =
+                    noticias[indice].title;
+
+
+                contenedor.replaceChildren(titulo);
+
+
+                contador.textContent =
+                    `${indice + 1} / ${noticias.length}`;
+
+            }
+
+
+            pintar();
+
+
+            contador.style.display = "inline-block";
+
+            siguiente.style.display = "flex";
+
+            anterior.style.display = "flex";
+
+
+            siguiente.onclick = () => {
+
+                indice =
+                    (indice + 1) %
+                    noticias.length;
+
+                pintar();
+
+            };
+
+
+            anterior.onclick = () => {
+
+                indice =
+                    (indice - 1 + noticias.length) %
+                    noticias.length;
+
+                pintar();
+
+            };
+
+        }
+
+    </script>
+
+
+    <script>
+
+        /* =====================================================
+           NOTICIAS
+           Se muestran al instante las últimas guardadas en este
+           dispositivo y, cuando Google responde, se actualizan.
+        ===================================================== */
+
+        function recibirNoticias(data){
+
+            if (Array.isArray(data) && data.length > 0) {
+                try { localStorage.setItem("noticias", JSON.stringify(data)); } catch (e) {}
+                pintarNoticias(data);
+            } else if (!document.querySelector("#noticia a")) {
+                pintarNoticias(data);
+            }
+
+        }
+
+        try {
+            const guardadas = JSON.parse(localStorage.getItem("noticias") || "null");
+            if (Array.isArray(guardadas) && guardadas.length > 0) {
+                pintarNoticias(guardadas);
+            }
+        } catch (e) {}
+
+        (function () {
+            const s = document.createElement("script");
+            s.src = "https://script.google.com/macros/s/AKfycbzzgg17cby98NjAjZWKDR9k4XuWZbHL9_if2q9fUgVYvPBxJEF7O3vV90QvyWPR8g437A/exec?callback=recibirNoticias";
+            s.async = true;
+            document.body.appendChild(s);
+        })();
+
+    </script>
+
+<script>
+
+let deferredPrompt = null;
+
+
+/* =========================================================
+   CAPTURAR INSTALACIÓN
+========================================================= */
+
+window.addEventListener("beforeinstallprompt", event => {
+
+    event.preventDefault();
+
+    deferredPrompt = event;
+
+    actualizarBotonApp();
+
+});
+
+
+/* =========================================================
+   COMPROBAR SI YA ESTÁ INSTALADA
+========================================================= */
+
+function appEstaInstalada() {
+
+    return (
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true
+    );
+
+}
+
+
+/* =========================================================
+   DETECTAR IPHONE / IPAD
+========================================================= */
+
+function esIOS() {
+
+    return /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+}
+
+
+/* =========================================================
+   ACTUALIZAR BOTÓN
+========================================================= */
+
+function actualizarBotonApp() {
+
+    const boton = document.getElementById("footer-app");
+
+    if (!boton) return;
+
+
+    /* APP YA INSTALADA */
+
+    if (appEstaInstalada()) {
+
+        boton.textContent = "✓ App instalada";
+
+        boton.style.opacity = "0.6";
+
+        boton.style.pointerEvents = "none";
+
+        return;
+
+    }
+
+
+    /* IPHONE / IPAD */
+
+    if (esIOS()) {
+
+        boton.textContent = "📱 Instalar App";
+
+        return;
+
+    }
+
+
+    /* RESTO DE DISPOSITIVOS */
+
+    boton.textContent = "📱 Instalar App";
+
+}
+
+
+/* =========================================================
+   BOTÓN DE INSTALACIÓN
+========================================================= */
+
+document.addEventListener("click", async event => {
+
+    const boton = event.target.closest("#footer-app");
+
+    if (!boton) return;
+
+    event.preventDefault();
+
+
+    /* YA ESTÁ INSTALADA */
+
+    if (appEstaInstalada()) {
+
+        return;
+
+    }
+
+
+    /* IPHONE / IPAD */
+
+    if (esIOS()) {
+
+        mostrarModalIOS();
+
+        return;
+
+    }
+
+
+    /* ANDROID / ORDENADOR */
+
+    if (deferredPrompt) {
+
+        deferredPrompt.prompt();
+
+
+        const resultado =
+            await deferredPrompt.userChoice;
+
+
+        console.log(
+            "Resultado de instalación:",
+            resultado.outcome
+        );
+
+
+        deferredPrompt = null;
+
+        actualizarBotonApp();
+
+        return;
+
+    }
+
+
+    /* EL NAVEGADOR NO HA OFRECIDO INSTALACIÓN */
+
+    alert(
+        "La instalación todavía no está disponible.\n\n" +
+        "Si estás usando Chrome o Edge, abre el menú del navegador " +
+        "y busca «Instalar Matemáticas» o «Instalar aplicación»."
+    );
+
+});
+
+
+/* =========================================================
+   CUANDO LA APP SE INSTALA
+========================================================= */
+
+window.addEventListener("appinstalled", () => {
+
+    deferredPrompt = null;
+
+    actualizarBotonApp();
+
+});
+
+
+/* =========================================================
+   COMPROBAR AL CARGAR
+========================================================= */
+
+window.addEventListener("load", () => {
+
+    actualizarBotonApp();
+
+});
+
+
+/* =========================================================
+   VOLVER A LA PÁGINA
+========================================================= */
+
+document.addEventListener("visibilitychange", () => {
+
+    if (!document.hidden) {
+
+        actualizarBotonApp();
+
+    }
+
+});
+
+</script>
+
+<!-- =========================================================
+     MODAL INSTALACIÓN IPHONE
+========================================================= -->
+
+<div id="modal-ios" class="modal-ios">
+
+    <div class="modal-ios-fondo"></div>
+
+    <div class="modal-ios-caja">
+
+        <button
+            id="cerrar-modal-ios"
+            class="modal-ios-cerrar">
+            ×
+        </button>
+
+
+        <div class="modal-ios-icono">
+            📱
+        </div>
+
+
+        <h2>
+            Instala Matemáticas
+        </h2>
+
+
+        <p class="modal-ios-intro">
+            Ten la web siempre a mano en tu iPhone.
+        </p>
+
+
+        <div class="modal-ios-pasos">
+
+
+            <div class="modal-ios-paso">
+
+                <div class="modal-ios-numero">
+                    1
+                </div>
+
+                <div class="modal-ios-texto">
+
+                    <strong>
+                        Pulsa Compartir
+                    </strong>
+
+                    <span>
+                        En Safari, pulsa el botón
+                        <b>Compartir</b>
+                        ⬆️
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-ios-paso">
+
+                <div class="modal-ios-numero">
+                    2
+                </div>
+
+                <div class="modal-ios-texto">
+
+                    <strong>
+                        Añadir a pantalla de inicio
+                    </strong>
+
+                    <span>
+                        Desliza hacia abajo y selecciona
+                        <b>«Añadir a pantalla de inicio»</b>.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-ios-paso">
+
+                <div class="modal-ios-numero">
+                    3
+                </div>
+
+                <div class="modal-ios-texto">
+
+                    <strong>
+                        Pulsa Añadir
+                    </strong>
+
+                    <span>
+                        Confirma pulsando
+                        <b>«Añadir»</b>.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            id="cerrar-modal-ios-btn"
+            class="modal-ios-ok">
+
+            Entendido
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   MODAL IPHONE
+========================================================= */
+
+.modal-ios {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+}
+
+
+.modal-ios.activo {
+
+    display: flex;
+
+}
+
+
+/* FONDO */
+
+.modal-ios-fondo {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(2, 6, 23, 0.72);
+
+    backdrop-filter:
+        blur(8px);
+
+    -webkit-backdrop-filter:
+        blur(8px);
+
+}
+
+
+/* CAJA */
+
+.modal-ios-caja {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 420px;
+
+    padding: 32px 28px 28px;
+
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8fafc
+        );
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.35);
+
+    color: #0f172a;
+
+    animation:
+        aparecer-ios
+        0.25s
+        ease-out;
+
+}
+
+
+@keyframes aparecer-ios {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.96);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+/* CERRAR */
+
+.modal-ios-cerrar {
+
+    position: absolute;
+
+    top: 12px;
+    right: 14px;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background:
+        #f1f5f9;
+
+    color:
+        #64748b;
+
+    font-size: 25px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+}
+
+
+/* ICONO */
+
+.modal-ios-icono {
+
+    width: 64px;
+    height: 64px;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #38bdf8
+        );
+
+    font-size: 30px;
+
+    box-shadow:
+        0 10px 25px
+        rgba(37, 99, 235, 0.25);
+
+}
+
+
+/* TÍTULO */
+
+.modal-ios-caja h2 {
+
+    margin: 0;
+
+    text-align: center;
+
+    font-size: 1.5rem;
+
+}
+
+
+.modal-ios-intro {
+
+    margin: 8px 0 25px;
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 0.9rem;
+
+    line-height: 1.5;
+
+}
+
+
+/* PASOS */
+
+.modal-ios-pasos {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+}
+
+
+.modal-ios-paso {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 13px;
+
+    padding: 13px;
+
+    border-radius: 16px;
+
+    background:
+        #f8fafc;
+
+}
+
+
+.modal-ios-numero {
+
+    flex-shrink: 0;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        #2563eb;
+
+    color: white;
+
+    font-weight: 700;
+
+    font-size: 0.85rem;
+
+}
+
+
+.modal-ios-texto {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+
+.modal-ios-texto strong {
+
+    font-size: 0.9rem;
+
+}
+
+
+.modal-ios-texto span {
+
+    color: #64748b;
+
+    font-size: 0.78rem;
+
+    line-height: 1.45;
+
+}
+
+
+/* BOTÓN */
+
+.modal-ios-ok {
+
+    width: 100%;
+
+    margin-top: 24px;
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background:
+        #2563eb;
+
+    color: white;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.modal-ios-ok:hover {
+
+    background:
+        #1d4ed8;
+
+}
+
+
+/* MÓVIL */
+
+@media (max-width: 480px) {
+
+    .modal-ios {
+
+        padding: 14px;
+
+    }
+
+
+    .modal-ios-caja {
+
+        padding:
+            28px
+            20px
+            22px;
+
+        border-radius: 23px;
+
+    }
+
+}
+
+</style>
+
+
+<script>
+
+/* =========================================================
+   ABRIR MODAL IPHONE
+========================================================= */
+
+function mostrarModalIOS() {
+
+    const modal =
+        document.getElementById("modal-ios");
+
+    if (!modal) return;
+
+    modal.classList.add("activo");
+
+}
+
+
+/* =========================================================
+   CERRAR MODAL
+========================================================= */
+
+function cerrarModalIOS() {
+
+    const modal =
+        document.getElementById("modal-ios");
+
+    if (!modal) return;
+
+    modal.classList.remove("activo");
+
+}
+
+
+/* BOTÓN X */
+
+document
+    .getElementById("cerrar-modal-ios")
+    ?.addEventListener(
+        "click",
+        cerrarModalIOS
+    );
+
+
+/* BOTÓN ENTENDIDO */
+
+document
+    .getElementById("cerrar-modal-ios-btn")
+    ?.addEventListener(
+        "click",
+        cerrarModalIOS
+    );
+
+
+/* CLIC FUERA */
+
+document
+    .querySelector(".modal-ios-fondo")
+    ?.addEventListener(
+        "click",
+        cerrarModalIOS
+    );
+
+</script>
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
