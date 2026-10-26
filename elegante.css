@@ -1793,3 +1793,35 @@
         font-size: .98rem;
     }
 }
+
+
+/* =========================================================
+   NOTICIAS: la caja crece con el titular (nunca lo corta)
+========================================================= */
+
+:root .news-body {
+    height: auto;
+    min-height: 150px;
+    overflow: visible;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+:root .news-body a {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+
+    :root .news-body {
+        min-height: 120px;
+        padding: 20px 18px 16px;
+    }
+
+    :root .news-body a {
+        font-size: 1.05rem;
+        line-height: 1.45;
+    }
+}

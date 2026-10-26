@@ -1546,15 +1546,18 @@
       iframe.title = "Vídeo de TikTok";
     
       iframe.allow =
-        "autoplay; encrypted-media;";
+        "autoplay; encrypted-media; fullscreen; picture-in-picture";
     
       iframe.setAttribute("allowfullscreen", "");
     
       iframe.loading = "lazy";
     
       iframe.src =
-        "https://www.tiktok.com/embed/v2/" +
-        encodeURIComponent(video.id);
+        // Reproductor oficial de TikTok (player/v1).
+        // El antiguo "embed/v2" da "ratelimit triggered".
+        "https://www.tiktok.com/player/v1/" +
+        encodeURIComponent(video.id) +
+        "?rel=0&music_info=0&description=0";
     
     
       // Igual que Instagram:
