@@ -1825,3 +1825,47 @@
         line-height: 1.45;
     }
 }
+
+
+/* =========================================================
+   NOTICIAS Y NOVEDADES EN EL MÓVIL: tarjetas más altas,
+   el texto nunca se corta
+========================================================= */
+
+:root .news-card,
+:root .board,
+:root .board-wrapper,
+:root .inicio-paneles {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+}
+
+:root .news-card {
+    overflow: hidden;           /* solo para respetar las esquinas */
+}
+
+:root .news-body,
+:root #noticia {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+:root .news-body a {
+    white-space: normal;
+    -webkit-line-clamp: unset;
+    text-overflow: clip;
+}
+
+@media (max-width: 720px) {
+
+    :root .news-body {
+        min-height: 190px;
+        padding: 26px 20px 22px;
+    }
+
+    :root .board ul {
+        max-height: 360px;
+    }
+}
