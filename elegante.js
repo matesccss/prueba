@@ -44,6 +44,11 @@
     else if (/cumpleanos\.html$/.test(ruta)) pagina = "cumpleanos";
     html.setAttribute("data-pagina", pagina);
 
+    /* Páginas con cabecera grande (banda oscura bajo el menú) */
+    if (pagina !== "juego" && pagina !== "cumpleanos" && !/interactivos/.test(ruta)) {
+        html.setAttribute("data-cabecera", "si");
+    }
+
     function aplicarTema(tema) {
         html.setAttribute("data-tema", tema);
         var meta = document.querySelector('meta[name="theme-color"]');
@@ -89,7 +94,7 @@
             return;
         }
 
-        if (e.target.closest(".menu-buscar")) {
+        if (e.target.closest(".menu-buscar, .abrir-buscador")) {
             abrirBuscador();
             return;
         }
@@ -208,9 +213,9 @@
     /* Aparición suave al hacer scroll */
 
     var SELECTOR_REVELAR =
-        ".hero-apple, .titulo-accesos, .titulo-pau, .quick-card, .board-wrapper, .news-card, " +
-        ".pau-card, .b-tile, .tema-header, .btn-tema, .aviso-examen, .curiosidades, " +
-        ".videos-header, .video-section, .game-card, .tema, .cabecera";
+        ".seccion-cab, .quick-card, .board-wrapper, .news-card, " +
+        ".pau-card, .b-tile, .btn-tema, .aviso-examen, .curiosidades, " +
+        ".video-section, .game-card, .tema";
 
     function prepararAparicion() {
 
@@ -696,7 +701,10 @@
         var fecha = ahora.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
 
         var el = document.getElementById("saludo");
-        if (el) el.textContent = saludo + " · " + fecha;
+        if (el) el.textContent = el.classList.contains("corto") ? saludo : saludo + " · " + fecha;
+
+        var fh = document.getElementById("fecha-hoy");
+        if (fh) fh.textContent = fecha.charAt(0).toUpperCase() + fecha.slice(1);
 
         /* Racha de días seguidos entrando en la web (solo en este dispositivo) */
         var racha = { dia: "", n: 0 };
@@ -759,6 +767,12 @@
                     new Date(sig.fecha).toLocaleDateString("es-ES", { day: "numeric", month: "long" }) + '</p>' : "");
 
             caja.hidden = false;
+
+            var ir = document.getElementById("hero-ir");
+            if (ir) {
+                ir.href = t.url;
+                ir.firstElementChild.textContent = "Preparar el examen";
+            }
             if (bento) bento.classList.remove("sin-examen");
             actualizarCuentas();
 
@@ -1046,12 +1060,369 @@
 
 
     /* =====================================================
+       8. CABECERAS: menú transparente arriba, migas de pan,
+          número gigante de fondo y la animación de la portada
+    ===================================================== */
+
+    /* El menú es transparente mientras estamos sobre la cabecera */
+    function marcarArriba() {
+        html.classList.toggle("arriba", window.scrollY < 24);
+    }
+    marcarArriba();
+    window.addEventListener("scroll", marcarArriba, { passive: true });
+
+
+    /* Cabeceras de temas, vídeos, calculadoras, exámenes, juegos y reels */
+    function prepararCabeceras() {
+
+        var cab = document.querySelector(".tema-header, .videos-header, .cabecera, .games-header, .reels-header");
+        if (!cab || cab.classList.contains("banda")) return;
+        cab.classList.add("banda");
+
+        var curso = html.getAttribute("data-curso");
+        var textoCurso = curso ? curso + ".º Bachillerato" : "";
+        var num = "";
+
+        var h1 = cab.querySelector("h1");
+        var etiqueta = cab.querySelector(".videos-label");
+        var origen = (etiqueta ? etiqueta.textContent : "") + " " + (h1 ? h1.textContent : "");
+        var m = /tema\s*(\d+)/i.exec(origen);
+        if (m) num = (m[1].length < 2 ? "0" : "") + m[1];
+
+        if (pagina === "calculadora") num = "fx";
+        if (num) cab.setAttribute("data-num", num);
+
+        /* «Tema 1: Números reales» → «Tema 1» encima y «Números reales» grande */
+        if (h1 && cab.classList.contains("tema-header")) {
+            var t = h1.textContent.replace(/\s+/g, " ").trim();
+            var partes = /^(Tema\s*\d+)\s*[:.·-]\s*(.+)$/i.exec(t);
+            if (partes) {
+                h1.innerHTML = '<span class="h1-pre"></span><span class="h1-txt"></span>';
+                h1.firstChild.textContent = partes[1];
+                h1.lastChild.textContent = partes[2];
+            }
+        }
+
+        /* «Videos YouTube · Probabilidad» → «Tema 2 · Vídeos de YouTube» encima y «Probabilidad» grande */
+        if (h1 && cab.classList.contains("videos-header") && h1.textContent.indexOf("·") > -1) {
+            var trozosH1 = h1.textContent.replace(/\s+/g, " ").trim().split("·");
+            var tipo = trozosH1.shift().trim().replace(/^Videos?\s+YouTube$/i, "Vídeos de YouTube").replace(/^Videos\b/i, "Vídeos");
+            var resto = trozosH1.join("·").trim();
+            h1.innerHTML = '<span class="h1-pre"></span><span class="h1-txt"></span>';
+            h1.firstChild.textContent = (m ? "Tema " + m[1] + " · " : "") + tipo;
+            h1.lastChild.textContent = resto;
+            if (etiqueta) etiqueta.style.display = "none";
+        }
+
+        /* Migas de pan */
+        var migas = document.createElement("nav");
+        migas.className = "migas";
+        migas.setAttribute("aria-label", "Estás aquí");
+
+        var trozos = [['Inicio', raiz]];
+        if (textoCurso) trozos.push([textoCurso + " · CCSS " + (curso === "1" ? "I" : "II"), null]);
+
+        if (/videosyoutube|videospropios/.test(ruta) && m) {
+            trozos.push(["Tema " + m[1], new URL("../tema" + m[1] + ".html", location.href).href]);
+            trozos.push([/videospropios/.test(ruta) ? "Vídeos propios" : "Vídeos", null]);
+        } else if (cab.classList.contains("tema-header") && m) {
+            trozos.push(["Tema " + m[1], null]);
+        } else if (pagina === "calculadora") {
+            trozos.push(["Calculadoras", null]);
+        } else if (/examenes\.html$/.test(ruta)) {
+            trozos.push(["Exámenes del curso", null]);
+        } else if (/juegos\.html$/.test(ruta)) {
+            trozos.push(["Juegos", null]);
+        } else if (/reels\.html$/.test(ruta)) {
+            trozos.push(["Reels", null]);
+        }
+
+        trozos.forEach(function (tr, i) {
+            if (i) {
+                var sep = document.createElement("span");
+                sep.className = "migas-sep";
+                sep.textContent = "/";
+                migas.appendChild(sep);
+            }
+            var el = document.createElement(tr[1] && i < trozos.length - 1 ? "a" : "span");
+            if (el.tagName === "A") el.href = tr[1];
+            el.textContent = tr[0];
+            migas.appendChild(el);
+        });
+
+        cab.insertBefore(migas, cab.firstChild);
+
+        /* Que la banda empiece justo arriba del todo, debajo del menú,
+           aunque la página tenga márgenes propios */
+        function pegarArriba() {
+            cab.style.marginTop = "";
+            var arriba = cab.getBoundingClientRect().top + window.scrollY;
+            if (Math.abs(arriba) > 1) {
+                var actual = parseFloat(getComputedStyle(cab).marginTop) || 0;
+                cab.style.marginTop = (actual - arriba) + "px";
+            }
+        }
+        pegarArriba();
+        window.addEventListener("load", pegarArriba);
+        window.addEventListener("resize", pegarArriba);
+    }
+
+
+    /* ---------- La animación de la portada ---------- */
+
+    function lienzoHero() {
+
+        var lienzo = document.querySelector(".hero-lienzo");
+        if (!lienzo || !lienzo.getContext) return;
+
+        var hero = lienzo.parentElement;
+        var ctx = lienzo.getContext("2d");
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var W = 0, H = 0, movil = false;
+        var raton = null;
+        var visible = true;
+        var t0 = performance.now();
+
+        var SIMBOLOS = ["∑", "∫", "π", "σ", "μ", "√", "Δ", "∞", "≈", "x̄", "P(A|B)", "eˣ", "f'(x)", "lím", "±", "≤", "n!", "∂"];
+        var flotantes = [];
+        var particulas = [];
+
+        function preparar() {
+            var r = hero.getBoundingClientRect();
+            W = r.width;
+            H = r.height;
+            movil = W < 760;
+            lienzo.width = Math.round(W * dpr);
+            lienzo.height = Math.round(H * dpr);
+            lienzo.style.width = W + "px";
+            lienzo.style.height = H + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            flotantes = [];
+            var n = movil ? 9 : 18;
+            for (var i = 0; i < n; i++) {
+                flotantes.push({
+                    s: SIMBOLOS[i % SIMBOLOS.length],
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    v: 6 + Math.random() * 10,
+                    a: .05 + Math.random() * .09,
+                    t: 14 + Math.random() * 22,
+                    f: Math.random() * Math.PI * 2
+                });
+            }
+
+            particulas = [];
+            var p = movil ? 26 : 54;
+            for (var j = 0; j < p; j++) {
+                particulas.push({ u: Math.random(), v: .02 + Math.random() * .05, r: .8 + Math.random() * 1.8 });
+            }
+        }
+
+        /* Zona del dibujo: a la derecha en ordenador, abajo en el móvil */
+        function zona() {
+            if (movil) return { x0: -W * .1, x1: W * 1.1, base: H - 70, alto: H * .3 };
+            /* En el ordenador la campana ocupa la franja baja, por debajo
+               de la tarjeta del examen y por encima de la cinta */
+            return { x0: W * .3, x1: W * 1.04, base: H - 76, alto: Math.min(H * .3, 230) };
+        }
+
+        function gauss(x, m, s) {
+            return Math.exp(-((x - m) * (x - m)) / (2 * s * s));
+        }
+
+        function dibujar(ahora) {
+
+            var t = (ahora - t0) / 1000;
+            var z = zona();
+            var m = Math.sin(t * .17) * .18;
+            var s = .2 + Math.sin(t * .23) * .05 + .03;
+
+            function X(u) { return z.x0 + (u + 1) / 2 * (z.x1 - z.x0); }
+            function Y(v) { return z.base - v * z.alto; }
+
+            ctx.clearRect(0, 0, W, H);
+
+            /* símbolos que flotan */
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            flotantes.forEach(function (f) {
+                var y = (f.y - t * f.v) % (H + 60);
+                if (y < -30) y += H + 60;
+                if (y < 90) return;   /* que no asomen por detrás del menú */
+                var x = f.x + Math.sin(t * .3 + f.f) * 14;
+                ctx.font = "500 " + f.t + "px Poppins, Inter, sans-serif";
+                ctx.fillStyle = "rgba(200, 190, 255," + f.a + ")";
+                ctx.fillText(f.s, x, y);
+            });
+
+            /* histograma de fondo */
+            var barras = movil ? 18 : 26;
+            for (var b = 0; b < barras; b++) {
+                var u0 = -1 + b * 2 / barras, u1 = u0 + 2 / barras;
+                var h = gauss((u0 + u1) / 2, m, s);
+                var x0 = X(u0) + 1.5, x1 = X(u1) - 1.5;
+                var g = ctx.createLinearGradient(0, Y(h), 0, z.base);
+                g.addColorStop(0, "rgba(140, 115, 255, .16)");
+                g.addColorStop(1, "rgba(140, 115, 255, .02)");
+                ctx.fillStyle = g;
+                ctx.fillRect(x0, Y(h), x1 - x0, z.base - Y(h));
+            }
+
+            /* eje */
+            ctx.strokeStyle = "rgba(255, 255, 255, .14)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(z.x0, z.base + .5);
+            ctx.lineTo(z.x1, z.base + .5);
+            ctx.stroke();
+
+            /* área de ±1σ */
+            ctx.beginPath();
+            ctx.moveTo(X(m - s), z.base);
+            for (var a = m - s; a <= m + s; a += .01) ctx.lineTo(X(a), Y(gauss(a, m, s)));
+            ctx.lineTo(X(m + s), z.base);
+            ctx.closePath();
+            var ga = ctx.createLinearGradient(0, Y(1), 0, z.base);
+            ga.addColorStop(0, "rgba(120, 140, 255, .35)");
+            ga.addColorStop(1, "rgba(120, 140, 255, .02)");
+            ctx.fillStyle = ga;
+            ctx.fill();
+
+            /* media */
+            ctx.setLineDash([4, 6]);
+            ctx.strokeStyle = "rgba(255, 255, 255, .25)";
+            ctx.beginPath();
+            ctx.moveTo(X(m), Y(1));
+            ctx.lineTo(X(m), z.base);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            /* curva secundaria (más suave) */
+            ctx.beginPath();
+            for (var k = -1; k <= 1.0001; k += .01) {
+                var yk = gauss(k, -m * .8, s * 1.9) * .55;
+                if (k === -1) ctx.moveTo(X(k), Y(yk)); else ctx.lineTo(X(k), Y(yk));
+            }
+            ctx.strokeStyle = "rgba(90, 200, 255, .28)";
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            /* curva principal con brillo */
+            var gl = ctx.createLinearGradient(z.x0, 0, z.x1, 0);
+            gl.addColorStop(0, "#7a5cff");
+            gl.addColorStop(.5, "#5b8cff");
+            gl.addColorStop(1, "#ff7a59");
+            ctx.beginPath();
+            for (var q = -1; q <= 1.0001; q += .005) {
+                var yq = gauss(q, m, s);
+                if (q === -1) ctx.moveTo(X(q), Y(yq)); else ctx.lineTo(X(q), Y(yq));
+            }
+            ctx.strokeStyle = gl;
+            ctx.lineWidth = 2.6;
+            ctx.shadowColor = "rgba(120, 130, 255, .9)";
+            ctx.shadowBlur = 16;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            /* partículas que recorren la curva */
+            particulas.forEach(function (p) {
+                p.u = (p.u + p.v * .016) % 1;
+                var x = p.u * 2 - 1;
+                var px = X(x), py = Y(gauss(x, m, s));
+                ctx.beginPath();
+                ctx.arc(px, py, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(255, 255, 255, .85)";
+                ctx.shadowColor = "rgba(160, 170, 255, 1)";
+                ctx.shadowBlur = 8;
+                ctx.fill();
+            });
+            ctx.shadowBlur = 0;
+
+            /* al pasar el ratón: f(x) en ese punto */
+            if (raton && raton.x > z.x0 && raton.x < z.x1) {
+                var ux = (raton.x - z.x0) / (z.x1 - z.x0) * 2 - 1;
+                var fx = gauss(ux, m, s);
+                var py2 = Y(fx);
+                ctx.strokeStyle = "rgba(255, 255, 255, .35)";
+                ctx.setLineDash([2, 4]);
+                ctx.beginPath();
+                ctx.moveTo(raton.x, z.base);
+                ctx.lineTo(raton.x, py2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.beginPath();
+                ctx.arc(raton.x, py2, 5, 0, Math.PI * 2);
+                ctx.fillStyle = "#fff";
+                ctx.shadowColor = "#9d8cff";
+                ctx.shadowBlur = 18;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                var etiqueta = "f(x) = " + fx.toFixed(3).replace(".", ",");
+                ctx.font = "600 13px Inter, sans-serif";
+                var ancho = ctx.measureText(etiqueta).width + 20;
+                var lx = Math.min(raton.x + 12, W - ancho - 8), ly = py2 - 36;
+                ctx.fillStyle = "rgba(20, 18, 40, .85)";
+                ctx.strokeStyle = "rgba(255, 255, 255, .18)";
+                ctx.beginPath();
+                if (ctx.roundRect) ctx.roundRect(lx, ly, ancho, 26, 8); else ctx.rect(lx, ly, ancho, 26);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = "#fff";
+                ctx.textAlign = "left";
+                ctx.fillText(etiqueta, lx + 10, ly + 13.5);
+            }
+        }
+
+        function bucle(ahora) {
+            if (visible && !document.hidden) dibujar(ahora);
+            if (!movimientoReducido) requestAnimationFrame(bucle);
+        }
+
+        preparar();
+
+        if ("ResizeObserver" in window) {
+            new ResizeObserver(function () { preparar(); if (movimientoReducido) dibujar(performance.now()); }).observe(hero);
+        } else {
+            window.addEventListener("resize", preparar);
+        }
+
+        if ("IntersectionObserver" in window) {
+            new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(hero);
+        }
+
+        hero.addEventListener("pointermove", function (e) {
+            if (e.pointerType === "touch") return;
+            var r = hero.getBoundingClientRect();
+            raton = { x: e.clientX - r.left, y: e.clientY - r.top };
+        });
+        hero.addEventListener("pointerleave", function () { raton = null; });
+
+        if (movimientoReducido) {
+            t0 = performance.now() - 4000;
+            dibujar(performance.now());
+        } else {
+            requestAnimationFrame(bucle);
+        }
+
+        /* Cuando lleguen las fuentes, redibuja los símbolos con Poppins */
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(function () { if (movimientoReducido) dibujar(performance.now()); });
+        }
+    }
+
+
+    /* =====================================================
        ARRANQUE
     ===================================================== */
 
     document.addEventListener("DOMContentLoaded", function () {
 
+        prepararCabeceras();
+
         if (pagina === "inicio") {
+            lienzoHero();
             saludoYRacha();
             proximoExamen();
             retoDelDia();
