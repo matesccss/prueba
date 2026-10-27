@@ -5019,3 +5019,250 @@
 :root .hero-lead .saludo-coletilla {
     color: rgba(255, 255, 255, .72);
 }
+
+
+/* =========================================================
+   HERRAMIENTAS NUEVAS
+========================================================= */
+
+/* Sección «Hoy»: el reto a lo ancho y dos herramientas debajo */
+:root .bento-hoy .b-reto   { grid-column: 1 / -1; }
+:root .bento-hoy .b-normal { grid-column: span 6; }
+:root .bento-hoy .b-nota   { grid-column: span 6; }
+:root .bento-hoy .reto-opciones { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+:root .b-normal {
+    display: flex;
+    flex-direction: column;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 80'%3E%3Cpath d='M0 76 C40 76 60 74 75 56 S92 8 100 8 S118 38 125 56 S160 76 200 76' fill='none' stroke='%237048ff' stroke-opacity='.35' stroke-width='2'/%3E%3Cpath d='M75 76 L75 56 C 85 40 92 8 100 8 S 115 40 125 56 L125 76Z' fill='%237048ff' fill-opacity='.08'/%3E%3C/svg%3E"),
+        radial-gradient(90% 80% at 0% 100%, rgba(112, 72, 255, .08), transparent 60%);
+    background-repeat: no-repeat;
+    background-position: right 20px bottom 20px, 0 0;
+    background-size: 150px auto, auto;
+}
+
+:root .b-normal .b-etiqueta::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    background: var(--granate-suave) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 20c4 0 5-1 7-6s2-9 3-9 2 4 3 9 3 6 7 6' fill='none' stroke='%237048ff' stroke-width='2.4'/%3E%3C/svg%3E") center / 13px no-repeat;
+}
+
+@media (max-width: 960px) {
+    :root .bento-hoy .b-normal,
+    :root .bento-hoy .b-nota { grid-column: 1 / -1; }
+    :root .bento-hoy .reto-opciones { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    :root .b-normal { background-size: 110px auto, auto; }
+}
+
+@media (max-width: 560px) {
+    :root .bento-hoy .reto-opciones { grid-template-columns: 1fr; }
+}
+
+/* Accesos rápidos: 6 tarjetas, 3 por fila */
+:root .quick-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 960px) {
+    :root .quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+:root button.quick-card {
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
+/* Selector de calculadoras */
+:root .calc-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 14px;
+}
+
+:root .calc-opcion {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    background: var(--tarjeta);
+    color: var(--tinta);
+    text-decoration: none;
+    transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+
+:root .calc-opcion:hover {
+    border-color: var(--granate);
+    transform: translateX(3px);
+    box-shadow: var(--sombra);
+}
+
+:root .calc-icono {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--granate-suave);
+}
+
+:root .calc-icono svg { width: 20px; height: 20px; fill: var(--granate); }
+
+:root .calc-texto { flex: 1 1 auto; display: flex; flex-direction: column; }
+:root .calc-texto strong { font-family: var(--serif); font-size: 1rem; font-weight: 600; }
+:root .calc-texto small { margin-top: 2px; font-size: .8rem; color: var(--gris); }
+:root .calc-flecha { color: var(--gris); font-size: 1.1rem; }
+
+:root .v-calculadoras .cp-caja { max-width: 520px; }
+
+/* Calculadora de la normal */
+:root .v-normal .cp-caja { max-width: 640px; }
+
+:root .nm-modos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    margin: 6px 0 16px;
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--relleno);
+}
+
+:root .nm-modo {
+    padding: 9px 6px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--tinta-2);
+    font-family: var(--sans);
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+:root .nm-modo.activo {
+    background: var(--tarjeta);
+    color: var(--granate);
+    box-shadow: 0 1px 3px rgba(20, 21, 28, .1);
+}
+
+:root .nm-campos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+:root .nm-grafica {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 16px 0 6px;
+    overflow: visible;
+}
+
+:root .nm-curva { fill: none; stroke: var(--granate); stroke-width: 2.2; }
+:root .nm-area { fill: var(--granate); fill-opacity: .2; }
+:root .nm-eje { stroke: var(--borde); stroke-width: 1.2; }
+:root .nm-marca { stroke: var(--granate); stroke-width: 1.2; stroke-dasharray: 3 3; }
+:root .nm-txt { font-family: var(--sans); font-size: 11px; font-weight: 600; fill: var(--tinta-2); text-anchor: middle; }
+
+:root .nm-resultado {
+    grid-template-columns: 1fr;
+}
+
+:root .nm-resultado .cp-mensaje {
+    font-family: var(--sans);
+    font-variant-numeric: tabular-nums;
+    color: var(--tinta-2);
+}
+
+@media (max-width: 560px) {
+    :root .nm-modos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    :root .nm-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Botón «Añadir a mi calendario» en la tarjeta del examen */
+:root .ep-calendario {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .18);
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color .15s ease;
+}
+
+:root .ep-calendario:hover {
+    background: rgba(255, 255, 255, .2);
+}
+
+:root .ep-calendario svg {
+    width: 15px;
+    height: 15px;
+    fill: currentColor;
+}
+
+/* Cumpleaños: el resto de la página respira bajo la nueva cabecera */
+:root[data-pagina="cumpleanos"] .banner {
+    margin-top: 8px;
+}
+
+:root[data-pagina="cumpleanos"] .banda h1 .h1-pre {
+    color: #ffb59f;
+    -webkit-text-fill-color: #ffb59f;
+}
+
+/* Cumpleaños traía un padding en el body que desplazaba el menú */
+:root[data-pagina="cumpleanos"] body {
+    padding: 0 !important;
+}
+
+:root[data-pagina="cumpleanos"] body > :not(#menu-container):not(#footer-container):not(.banda):not(.buscador):not(.volver-arriba) {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+@media (min-width: 1100px) {
+    :root[data-pagina="cumpleanos"] body > :not(#menu-container):not(#footer-container):not(.banda):not(.buscador):not(.volver-arriba) {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* Calculadora de la normal: campos en una fila y gráfica entera */
+:root .nm-campos {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+:root .v-normal .cp-caja {
+    max-height: 94vh;
+}
+
+:root .v-normal {
+    padding-top: 3vh;
+}
+
+:root .nm-grafica {
+    max-height: 150px;
+    margin: 14px 0 18px;
+}
+
+:root[data-pagina="cumpleanos"] body > :not(#menu-container):not(#footer-container):not(.banda):not(.buscador):not(.volver-arriba) {
+    box-sizing: border-box;
+    width: auto;
+    max-width: min(1000px, calc(100% - 32px));
+}

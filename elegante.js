@@ -45,7 +45,7 @@
     html.setAttribute("data-pagina", pagina);
 
     /* Páginas con cabecera grande (banda oscura bajo el menú) */
-    if (pagina !== "juego" && pagina !== "cumpleanos" && !/interactivos/.test(ruta)) {
+    if (pagina !== "juego" && !/interactivos/.test(ruta)) {
         html.setAttribute("data-cabecera", "si");
     }
 
@@ -755,6 +755,7 @@
                     new Date(sig.fecha).toLocaleDateString("es-ES", { day: "numeric", month: "long" }) + '</p>' : "");
 
             caja.hidden = false;
+            botonCalendario(caja, t);
 
             var ir = document.getElementById("hero-ir");
             if (ir) {
@@ -1063,7 +1064,7 @@
     /* Cabeceras de temas, vídeos, calculadoras, exámenes, juegos y reels */
     function prepararCabeceras() {
 
-        var cab = document.querySelector(".tema-header, .videos-header, .cabecera, .games-header, .reels-header");
+        var cab = document.querySelector(".tema-header, .videos-header, .cabecera, .games-header, .reels-header, .cumple-cabecera");
         if (!cab || cab.classList.contains("banda")) return;
         cab.classList.add("banda");
 
@@ -1123,6 +1124,8 @@
             trozos.push(["Juegos", null]);
         } else if (/reels\.html$/.test(ruta)) {
             trozos.push(["Reels", null]);
+        } else if (pagina === "cumpleanos") {
+            trozos.push(["Cumpleaños", null]);
         }
 
         trozos.forEach(function (tr, i) {
@@ -1212,7 +1215,14 @@
             if (movil) return { x0: -W * .1, x1: W * 1.1, base: H - 70, alto: H * .3 };
             /* En el ordenador la campana ocupa la franja baja, por debajo
                de la tarjeta del examen y por encima de la cinta */
-            return { x0: W * .3, x1: W * 1.04, base: H - 76, alto: Math.min(H * .3, 230) };
+            var techo = H * .45;
+            var tarjeta = hero.querySelector(".hero-examen:not([hidden])");
+            if (tarjeta) {
+                var rh = hero.getBoundingClientRect(), rt = tarjeta.getBoundingClientRect();
+                techo = rt.bottom - rh.top + 34;          /* la campana no sube más que esto */
+            }
+            var base = H - 76;
+            return { x0: W * .3, x1: W * 1.04, base: base, alto: Math.max(110, Math.min(230, base - techo)) };
         }
 
         function gauss(x, m, s) {
@@ -1351,6 +1361,16 @@
                 ctx.font = "600 13px Inter, sans-serif";
                 var ancho = ctx.measureText(etiqueta).width + 20;
                 var lx = Math.min(raton.x + 12, W - ancho - 8), ly = py2 - 36;
+
+                /* Si la etiqueta choca con la tarjeta del examen, va debajo del punto */
+                var tarjeta = hero.querySelector(".hero-examen:not([hidden])");
+                if (tarjeta) {
+                    var rh = hero.getBoundingClientRect(), rt = tarjeta.getBoundingClientRect();
+                    var tx0 = rt.left - rh.left - 6, tx1 = rt.right - rh.left + 6;
+                    var ty0 = rt.top - rh.top - 6, ty1 = rt.bottom - rh.top + 6;
+                    var choca = lx < tx1 && lx + ancho > tx0 && ly < ty1 && ly + 26 > ty0;
+                    if (choca) ly = py2 + 14;
+                }
                 ctx.fillStyle = "rgba(20, 18, 40, .85)";
                 ctx.strokeStyle = "rgba(255, 255, 255, .18)";
                 ctx.beginPath();
@@ -1477,6 +1497,281 @@
 
 
     /* =====================================================
+       9. HERRAMIENTAS: selector de calculadoras, calculadora
+          de la normal y «añadir el examen al calendario»
+    ===================================================== */
+
+    /* Ventana genérica (usa el mismo estilo que el buscador) */
+    function crearVentana(clase, etiqueta, titulo, cuerpo) {
+        var v = document.createElement("div");
+        v.className = "buscador ventana " + clase;
+        v.setAttribute("role", "dialog");
+        v.setAttribute("aria-modal", "true");
+        v.setAttribute("aria-label", titulo);
+        v.innerHTML =
+            '<div class="buscador-fondo"></div>' +
+            '<div class="buscador-caja cp-caja">' +
+            '<div class="cp-cabecera"><div><p class="b-etiqueta">' + etiqueta + '</p><h2>' + titulo + '</h2></div>' +
+            '<button type="button" class="cp-cerrar" aria-label="Cerrar">×</button></div>' +
+            cuerpo + '</div>';
+        document.body.appendChild(v);
+
+        function cerrar() {
+            v.classList.remove("abierto");
+            document.documentElement.classList.remove("sin-scroll");
+        }
+        v.querySelector(".buscador-fondo").addEventListener("click", cerrar);
+        v.querySelector(".cp-cerrar").addEventListener("click", cerrar);
+        v.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrar(); });
+
+        v.abrir = function () {
+            v.classList.add("abierto");
+            document.documentElement.classList.add("sin-scroll");
+            var foco = v.querySelector("input, a, button.cp-cerrar");
+            if (foco) setTimeout(function () { foco.focus(); }, 40);
+        };
+        return v;
+    }
+
+
+    /* ---------- Selector de calculadoras ---------- */
+
+    var ventanaCalculadoras = null;
+
+    function abrirCalculadoras() {
+        if (!ventanaCalculadoras) {
+            var modelos = [
+                ["calculadora570.html", "Casio FX-570SP CW", "La blanca. Vídeos paso a paso para cada tema."],
+                ["calculadora991.html", "Casio FX-991", "Vídeos paso a paso para cada tema."],
+                ["calculadoraclasswiz.html", "Casio ClassWiz", "Vídeos paso a paso para cada tema."]
+            ];
+            var cuerpo = '<div class="cp-cuerpo"><p class="cp-ayuda">¿Qué calculadora tienes? Elige tu modelo y verás cómo hacer con ella cada tipo de ejercicio.</p><div class="calc-lista">' +
+                modelos.map(function (m) {
+                    return '<a class="calc-opcion" href="' + raiz + 'calculadoras/' + m[0] + '">' +
+                        '<span class="calc-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2 3v3h6V5H9zm0 6h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"/></svg></span>' +
+                        '<span class="calc-texto"><strong>' + m[1] + '</strong><small>' + m[2] + '</small></span>' +
+                        '<span class="calc-flecha">→</span></a>';
+                }).join("") + '</div></div>';
+            ventanaCalculadoras = crearVentana("v-calculadoras", "Ayuda", "Calculadoras", cuerpo);
+        }
+        ventanaCalculadoras.abrir();
+    }
+
+
+    /* ---------- Calculadora de la normal ---------- */
+
+    /* Φ(z): función de distribución de la N(0,1) (error < 1e-7) */
+    function phi(z) {
+        var t = 1 / (1 + 0.2316419 * Math.abs(z));
+        var d = 0.3989422804014327 * Math.exp(-z * z / 2);
+        var p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+        return z > 0 ? 1 - p : p;
+    }
+
+    /* Φ⁻¹(p): inversa (algoritmo de Acklam, error < 1.2e-9) */
+    function phiInv(p) {
+        var a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
+        var b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01, -1.328068155288572e+01];
+        var c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+        var d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
+        var q, r;
+        if (p < 0.02425) {
+            q = Math.sqrt(-2 * Math.log(p));
+            return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+        }
+        if (p > 1 - 0.02425) {
+            q = Math.sqrt(-2 * Math.log(1 - p));
+            return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+        }
+        q = p - 0.5;
+        r = q * q;
+        return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+    }
+
+    /* Como en la tabla: z con 2 decimales y probabilidades con 4 */
+    function r2(n) { return Math.round(n * 100) / 100; }
+    function r4(n) { return Math.round(n * 10000) / 10000; }
+    function phiTabla(z) { return r4(phi(r2(z))); }
+
+    function fmt(n, dec) {
+        return n.toLocaleString("es-ES", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    }
+
+    function leerNum(v) {
+        if (v === "" || v === null || v === undefined) return null;
+        var n = parseFloat(String(v).replace(",", ".").replace("−", "-"));
+        return isNaN(n) ? null : n;
+    }
+
+    var ventanaNormal = null;
+
+    function abrirNormal() {
+
+        if (!ventanaNormal) {
+
+            var cuerpo =
+                '<div class="cp-cuerpo">' +
+                '<div class="nm-modos" role="tablist">' +
+                '<button type="button" class="nm-modo activo" data-modo="menor">P(X ≤ x)</button>' +
+                '<button type="button" class="nm-modo" data-modo="mayor">P(X ≥ x)</button>' +
+                '<button type="button" class="nm-modo" data-modo="entre">P(a ≤ X ≤ b)</button>' +
+                '<button type="button" class="nm-modo" data-modo="inversa">Buscar x</button>' +
+                '</div>' +
+                '<div class="cp-rejilla nm-campos">' +
+                '<label class="cp-campo"><span>Media μ</span><input id="nm-mu" inputmode="decimal" value="0" autocomplete="off"></label>' +
+                '<label class="cp-campo"><span>Desviación típica σ</span><input id="nm-sigma" inputmode="decimal" value="1" autocomplete="off"></label>' +
+                '<label class="cp-campo nm-x"><span>Valor x</span><input id="nm-x" inputmode="decimal" value="1,96" autocomplete="off"></label>' +
+                '<label class="cp-campo nm-a" hidden><span>Desde a</span><input id="nm-a" inputmode="decimal" value="-1" autocomplete="off"></label>' +
+                '<label class="cp-campo nm-b" hidden><span>Hasta b</span><input id="nm-b" inputmode="decimal" value="1" autocomplete="off"></label>' +
+                '<label class="cp-campo nm-p" hidden><span>Probabilidad P(X ≤ x)</span><input id="nm-p" inputmode="decimal" value="0,975" autocomplete="off"></label>' +
+                '</div>' +
+                '<svg class="nm-grafica" viewBox="0 0 400 150" aria-hidden="true"></svg>' +
+                '</div>' +
+                '<div class="cp-resultado nm-resultado">' +
+                '<div class="cp-nota cp-nota-adm"><small id="nm-etq">Probabilidad</small><strong id="nm-res">—</strong></div>' +
+                '<p class="cp-mensaje" id="nm-paso"></p>' +
+                '</div>' +
+                '<p class="cp-aviso">Tipificamos con Z = (X − μ) / σ y usamos la N(0, 1). Como en la tabla: z con 2 decimales y probabilidades con 4.</p>';
+
+            ventanaNormal = crearVentana("v-normal", "Distribución normal", "Calculadora de la normal", cuerpo);
+
+            var modo = "menor";
+            var V = ventanaNormal;
+
+            V.querySelectorAll(".nm-modo").forEach(function (b) {
+                b.addEventListener("click", function () {
+                    modo = b.getAttribute("data-modo");
+                    V.querySelectorAll(".nm-modo").forEach(function (x) { x.classList.toggle("activo", x === b); });
+                    V.querySelector(".nm-x").hidden = !(modo === "menor" || modo === "mayor");
+                    V.querySelector(".nm-a").hidden = modo !== "entre";
+                    V.querySelector(".nm-b").hidden = modo !== "entre";
+                    V.querySelector(".nm-p").hidden = modo !== "inversa";
+                    calcular();
+                });
+            });
+
+            V.querySelectorAll("input").forEach(function (i) { i.addEventListener("input", calcular); });
+
+            function val(id) { return leerNum(V.querySelector("#" + id).value); }
+
+            function dibujar(mu, s, desde, hasta, marca) {
+                var svg = V.querySelector(".nm-grafica");
+                var W = 400, base = 132, alto = 112;
+                function X(z) { return W / 2 + z * (W / 8); }
+                function Y(z) { return base - Math.exp(-z * z / 2) * alto; }
+                var curva = "", area = "";
+                for (var z = -4; z <= 4.0001; z += .05) curva += (z === -4 ? "M" : "L") + X(z).toFixed(1) + " " + Y(z).toFixed(1);
+                var z0 = Math.max(-4, desde), z1 = Math.min(4, hasta);
+                if (z1 > z0) {
+                    area = "M" + X(z0).toFixed(1) + " " + base;
+                    for (var w = z0; w <= z1 + 1e-9; w += .025) area += "L" + X(Math.min(w, z1)).toFixed(1) + " " + Y(Math.min(w, z1)).toFixed(1);
+                    area += "L" + X(z1).toFixed(1) + " " + base + "Z";
+                }
+                var marcas = "";
+                (marca || []).forEach(function (m) {
+                    if (m < -4 || m > 4) return;
+                    marcas += '<line x1="' + X(m) + '" y1="' + Y(m) + '" x2="' + X(m) + '" y2="' + (base + 4) + '" class="nm-marca"/>' +
+                        '<text x="' + X(m) + '" y="' + (base + 15) + '" class="nm-txt">' + fmt(mu + m * s, 2) + '</text>';
+                });
+                svg.innerHTML =
+                    '<path d="' + area + '" class="nm-area"/>' +
+                    '<path d="' + curva + '" class="nm-curva"/>' +
+                    '<line x1="0" y1="' + base + '" x2="' + W + '" y2="' + base + '" class="nm-eje"/>' + marcas;
+            }
+
+            function calcular() {
+                var mu = val("nm-mu"), s = val("nm-sigma");
+                var res = V.querySelector("#nm-res"), paso = V.querySelector("#nm-paso"), etq = V.querySelector("#nm-etq");
+
+                if (mu === null || s === null || s <= 0) {
+                    res.textContent = "—";
+                    paso.textContent = "La desviación típica tiene que ser un número mayor que 0.";
+                    return;
+                }
+
+                if (modo === "menor" || modo === "mayor") {
+                    var x = val("nm-x");
+                    if (x === null) { res.textContent = "—"; paso.textContent = "Escribe el valor x."; return; }
+                    var z = r2((x - mu) / s);
+                    var p = modo === "menor" ? phiTabla(z) : r4(1 - phiTabla(z));
+                    etq.textContent = modo === "menor" ? "P(X ≤ " + fmt(x, 2) + ")" : "P(X ≥ " + fmt(x, 2) + ")";
+                    res.textContent = fmt(p, 4);
+                    paso.textContent = "Z = (" + fmt(x, 2) + " − " + fmt(mu, 2) + ") / " + fmt(s, 2) + " = " + fmt(z, 2) +
+                        (modo === "menor" ? "  →  P(Z ≤ " + fmt(z, 2) + ") = " + fmt(p, 4) : "  →  1 − " + fmt(phiTabla(z), 4) + " = " + fmt(p, 4));
+                    dibujar(mu, s, modo === "menor" ? -4 : z, modo === "menor" ? z : 4, [z]);
+                }
+
+                if (modo === "entre") {
+                    var a = val("nm-a"), b = val("nm-b");
+                    if (a === null || b === null) { res.textContent = "—"; paso.textContent = "Escribe a y b."; return; }
+                    if (a > b) { var tmp = a; a = b; b = tmp; }
+                    var za = r2((a - mu) / s), zb = r2((b - mu) / s);
+                    var pe = r4(phiTabla(zb) - phiTabla(za));
+                    etq.textContent = "P(" + fmt(a, 2) + " ≤ X ≤ " + fmt(b, 2) + ")";
+                    res.textContent = fmt(pe, 4);
+                    paso.textContent = "P(" + fmt(za, 2) + " ≤ Z ≤ " + fmt(zb, 2) + ") = " + fmt(phiTabla(zb), 4) + " − " + fmt(phiTabla(za), 4) + " = " + fmt(pe, 4);
+                    dibujar(mu, s, za, zb, [za, zb]);
+                }
+
+                if (modo === "inversa") {
+                    var pr = val("nm-p");
+                    if (pr === null || pr <= 0 || pr >= 1) { res.textContent = "—"; paso.textContent = "La probabilidad tiene que estar entre 0 y 1 (por ejemplo 0,975)."; return; }
+                    var zi = phiInv(pr);
+                    var xi = mu + zi * s;
+                    etq.textContent = "Valor x con P(X ≤ x) = " + fmt(pr, 4);
+                    res.textContent = fmt(xi, 4);
+                    paso.textContent = "z = " + fmt(zi, 4) + "  →  x = μ + z·σ = " + fmt(mu, 2) + " + " + fmt(zi, 4) + " · " + fmt(s, 2) + " = " + fmt(xi, 4);
+                    dibujar(mu, s, -4, zi, [zi]);
+                }
+            }
+
+            calcular();
+        }
+        ventanaNormal.abrir();
+    }
+
+
+    /* ---------- Añadir el examen al calendario (.ics) ---------- */
+
+    function botonCalendario(caja, t) {
+        if (!caja || caja.querySelector(".ep-calendario")) return;
+
+        function f(d) {
+            return d.getFullYear() + dosCifras(d.getMonth() + 1) + dosCifras(d.getDate()) + "T" +
+                dosCifras(d.getHours()) + dosCifras(d.getMinutes()) + "00";
+        }
+
+        var ini = new Date(t.fecha);
+        var fin = new Date(t.fecha + 60 * 60 * 1000);
+        var ahora = new Date();
+        var titulo = "Examen de Matemáticas CCSS · " + t.titulo;
+
+        var ics = [
+            "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//IES El Molinillo//Matematicas CCSS//ES", "CALSCALE:GREGORIAN",
+            "BEGIN:VEVENT",
+            "UID:examen-" + t.fecha + "@matematicas-ccss",
+            "DTSTAMP:" + f(ahora),
+            "DTSTART:" + f(ini),
+            "DTEND:" + f(fin),
+            "SUMMARY:" + titulo.replace(/[,;]/g, "\\$&"),
+            "DESCRIPTION:Repasa en " + t.url,
+            "BEGIN:VALARM", "TRIGGER:-P1D", "ACTION:DISPLAY", "DESCRIPTION:Mañana tienes examen de Matemáticas", "END:VALARM",
+            "BEGIN:VALARM", "TRIGGER:-P7D", "ACTION:DISPLAY", "DESCRIPTION:Queda una semana para el examen de Matemáticas", "END:VALARM",
+            "END:VEVENT", "END:VCALENDAR"
+        ].join("\r\n");
+
+        var a = document.createElement("a");
+        a.className = "ep-calendario";
+        a.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+        a.setAttribute("download", "examen-matematicas.ics");
+        a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8v9H5v-9h14zm-8 2v2H9v2h2v2h2v-2h2v-2h-2v-2h-2z"/></svg>' +
+            '<span>Añadir a mi calendario</span>';
+        a.title = "Te avisará una semana antes y el día anterior";
+        caja.appendChild(a);
+    }
+
+
+    /* =====================================================
        ARRANQUE
     ===================================================== */
 
@@ -1492,6 +1787,10 @@
             retoDelDia();
             var bc = document.getElementById("abrir-calculadora");
             if (bc) bc.addEventListener("click", abrirCalculadora);
+            var bn = document.getElementById("abrir-normal");
+            if (bn) bn.addEventListener("click", abrirNormal);
+            var bcs = document.getElementById("abrir-calculadoras");
+            if (bcs) bcs.addEventListener("click", abrirCalculadoras);
         }
 
         botonArriba();

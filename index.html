@@ -24,8 +24,8 @@
     <script src="actualizar.js" defer></script>
 
 
-    <link rel="stylesheet" href="elegante.css?v=10">
-    <script src="elegante.js?v=10"></script>
+    <link rel="stylesheet" href="elegante.css?v=12">
+    <script src="elegante.js?v=12"></script>
 
 </head>
 
@@ -127,7 +127,7 @@
             <header class="seccion-cab">
                 <p class="seccion-num">01 — Hoy</p>
                 <h2>Tu dosis diaria</h2>
-                <p class="seccion-desc">Un reto nuevo cada día para mantener la cabeza en forma y tu calculadora de nota para la PAU.</p>
+                <p class="seccion-desc">Un reto nuevo cada día y dos herramientas para el día a día: la tabla de la normal y tu nota de la PAU.</p>
             </header>
 
             <div class="bento bento-hoy" id="bento">
@@ -138,6 +138,24 @@
                     <p class="b-etiqueta">Reto del día</p>
                     <p class="reto-pregunta">Cargando…</p>
                 </article>
+
+                <!-- CALCULADORA DE LA NORMAL -->
+
+                <article class="b-tile b-normal">
+
+                    <p class="b-etiqueta">Herramienta</p>
+
+                    <h2 class="b-nota-titulo">Calculadora de la normal</h2>
+
+                    <p class="b-nota-texto">Adiós a la tabla: P(Z ≤ z), probabilidades entre dos valores con cualquier media y desviación, y el valor z para una probabilidad.</p>
+
+                    <button class="b-boton" type="button" id="abrir-normal">
+                        Abrir la calculadora
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l7 7-7 7-1.4-1.4 4.6-4.6H4v-2h12.2l-4.6-4.6z"/></svg>
+                    </button>
+
+                </article>
+
 
                 <!-- CALCULADORA DE NOTA PAU -->
 
@@ -166,7 +184,7 @@
         <header class="seccion-cab">
             <p class="seccion-num">02 — Accesos rápidos</p>
             <h2>Todo a un clic</h2>
-            <p class="seccion-desc">Temporalización, exámenes del curso, directrices de la PAU y la ayuda para cada calculadora.</p>
+            <p class="seccion-desc">Temporalización, exámenes del curso, directrices de la PAU y la ayuda para tu calculadora.</p>
         </header>
 
 
@@ -264,32 +282,9 @@
             </a>
 
 
-            <!-- FX-570 -->
+            <!-- CALCULADORAS (abre un selector con los tres modelos) -->
 
-            <a class="quick-card"
-            href="calculadoras/calculadora570.html">
-
-                <div class="icon icon-calc">
-
-                    <svg viewBox="0 0 24 24">
-
-                        <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2 3v3h6V5H9zm0 6h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"/>
-
-                    </svg>
-
-                </div>
-
-                <div class="title">Calculadora FX-570SP CW (BLANCA)</div>
-
-                <div class="subtitle">Vídeos y ayuda</div>
-
-            </a>
-
-
-            <!-- FX-991 -->
-
-            <a class="quick-card"
-            href="calculadoras/calculadora991.html">
+            <button class="quick-card" type="button" id="abrir-calculadoras">
 
                 <div class="icon icon-calc">
 
@@ -301,33 +296,11 @@
 
                 </div>
 
-                <div class="title">Calculadora FX-991</div>
+                <div class="title">Calculadoras</div>
 
-                <div class="subtitle">Vídeos y ayuda</div>
+                <div class="subtitle">FX-570 · FX-991 · ClassWiz</div>
 
-            </a>
-
-
-            <!-- CLASSWIZ -->
-
-            <a class="quick-card"
-            href="calculadoras/calculadoraclasswiz.html">
-
-                <div class="icon icon-calc">
-
-                    <svg viewBox="0 0 24 24">
-
-                        <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2 3v3h6V5H9zm0 6h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"/>
-
-                    </svg>
-
-                </div>
-
-                <div class="title">Calculadora Classwiz</div>
-
-                <div class="subtitle">Vídeos y ayuda</div>
-
-            </a>
+            </button>
 
 
             <!-- EXÁMENES PAU -->
