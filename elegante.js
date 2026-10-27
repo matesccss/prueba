@@ -50,7 +50,25 @@
         if (meta) meta.setAttribute("content", tema === "noche" ? "#0b0d17" : "#f4f4f7");
     }
 
-    aplicarTema(leer("tema-web") === "noche" ? "noche" : "claro");
+    /* Modo por defecto: el que tenga el móvil u ordenador (claro u oscuro).
+       Si el alumno pulsa el botón ☀/☾, se respeta su elección. */
+    var oscuroSistema = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+    function temaInicial() {
+        var elegido = leer("tema-web");
+        if (elegido === "noche" || elegido === "claro") return elegido;
+        return oscuroSistema && oscuroSistema.matches ? "noche" : "claro";
+    }
+
+    aplicarTema(temaInicial());
+
+    if (oscuroSistema) {
+        var alCambiar = function () {
+            if (!leer("tema-web")) aplicarTema(oscuroSistema.matches ? "noche" : "claro");
+        };
+        if (oscuroSistema.addEventListener) oscuroSistema.addEventListener("change", alCambiar);
+        else if (oscuroSistema.addListener) oscuroSistema.addListener(alCambiar);
+    }
 
     var movimientoReducido =
         window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;

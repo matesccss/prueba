@@ -3838,3 +3838,267 @@
     :root .quick-card .title { font-size: .86rem; }
     :root .quick-card .subtitle { font-size: .74rem; }
 }
+
+
+/* ---------- Título de la portada: distinto de las tarjetas ---------- */
+
+:root .b-titulo-color {
+    background: linear-gradient(90deg, var(--granate) 0%, var(--azul) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+:root[data-tema="noche"] .b-titulo-color {
+    background: linear-gradient(90deg, #b9a2ff 0%, #8fb2ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* En el móvil y la tableta el saludo y el título van sobre el fondo,
+   sin caja, como la cabecera de una app; así la única tarjeta
+   destacada arriba es la del examen. */
+@media (max-width: 960px) {
+
+    :root .b-hola,
+    :root[data-tema="noche"] .b-hola {
+        padding: 10px 4px 6px;
+        background: none;
+        border: 0;
+        box-shadow: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        overflow: visible;
+    }
+
+    :root .b-titulo {
+        font-size: clamp(1.9rem, 8.4vw, 2.5rem);
+        line-height: 1.08;
+        letter-spacing: -.03em;
+    }
+
+    :root .b-hola .b-eyebrow {
+        margin-bottom: 14px;
+    }
+
+    :root .b-sub {
+        margin-top: 12px;
+        color: var(--gris);
+    }
+
+    :root .b-hola .b-frase {
+        display: none;
+    }
+}
+
+
+/* Lo que está oculto, oculto (aunque tenga su propio display) */
+:root [hidden] {
+    display: none !important;
+}
+
+/* Portada sin examen próximo: saludo + calculadora arriba, reto debajo */
+:root .bento.sin-examen .b-hola { grid-column: 1 / span 8; grid-row: 1; }
+:root .bento.sin-examen .b-nota { grid-column: 9 / span 4; grid-row: 1; }
+:root .bento.sin-examen .b-reto { grid-column: 1 / -1; grid-row: 2; }
+
+@media (max-width: 960px) {
+    :root .bento.sin-examen .b-hola,
+    :root .bento.sin-examen .b-nota,
+    :root .bento.sin-examen .b-reto {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+}
+
+
+/* =========================================================
+   TARJETA DEL TÍTULO · variantes (data-v en .b-hola)
+========================================================= */
+
+/* Volver a tener tarjeta también en el móvil */
+@media (max-width: 960px) {
+    :root .b-hola,
+    :root[data-tema="noche"] .b-hola {
+        padding: 22px 20px 20px;
+        border: 1px solid var(--borde);
+        box-shadow: var(--sombra);
+        overflow: hidden;
+    }
+    :root .b-titulo { font-size: clamp(1.7rem, 7.4vw, 2.2rem); }
+}
+
+/* --- V1 · Lavanda: tarjeta clara teñida, con cuadrícula y curva --- */
+:root .b-hola[data-v="1"] {
+    background-color: #f1edff;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Cpath d='M0.0 111.3 L5.0 111.0 L10.0 110.7 L15.0 110.2 L20.0 109.7 L25.0 108.9 L30.0 108.0 L35.0 106.8 L40.0 105.3 L45.0 103.6 L50.0 101.5 L55.0 99.0 L60.0 96.1 L65.0 92.8 L70.0 89.1 L75.0 84.9 L80.0 80.2 L85.0 75.2 L90.0 69.9 L95.0 64.3 L100.0 58.5 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L200.0 58.5 L205.0 64.3 L210.0 69.9 L215.0 75.2 L220.0 80.2 L225.0 84.9 L230.0 89.1 L235.0 92.8 L240.0 96.1 L245.0 99.0 L250.0 101.5 L255.0 103.6 L260.0 105.3 L265.0 106.8 L270.0 108.0 L275.0 108.9 L280.0 109.7 L285.0 110.2 L290.0 110.7 L295.0 111.0 L300.0 111.3' fill='none' stroke='%237048ff' stroke-opacity='.4' stroke-width='2'/%3E%3Cpath d='M102 112 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L198 112 Z' fill='%237048ff' fill-opacity='0.13'/%3E%3Cline x1='150' y1='20' x2='150' y2='112' stroke='%237048ff' stroke-opacity='.4' stroke-dasharray='3 4'/%3E%3Cline x1='0' y1='112' x2='300' y2='112' stroke='%2314151c' stroke-opacity='.12'/%3E%3C/svg%3E"),
+        linear-gradient(rgba(112, 72, 255, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(112, 72, 255, .07) 1px, transparent 1px),
+        linear-gradient(135deg, #f3efff 0%, #eaf0ff 100%);
+    background-size: 210px auto, 22px 22px, 22px 22px, auto;
+    background-position: right 14px bottom 10px, 0 0, 0 0, 0 0;
+    background-repeat: no-repeat, repeat, repeat, no-repeat;
+    border-color: #e1d9ff;
+}
+:root[data-tema="noche"] .b-hola[data-v="1"] {
+    background-color: #17142e;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Cpath d='M0.0 111.3 L5.0 111.0 L10.0 110.7 L15.0 110.2 L20.0 109.7 L25.0 108.9 L30.0 108.0 L35.0 106.8 L40.0 105.3 L45.0 103.6 L50.0 101.5 L55.0 99.0 L60.0 96.1 L65.0 92.8 L70.0 89.1 L75.0 84.9 L80.0 80.2 L85.0 75.2 L90.0 69.9 L95.0 64.3 L100.0 58.5 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L200.0 58.5 L205.0 64.3 L210.0 69.9 L215.0 75.2 L220.0 80.2 L225.0 84.9 L230.0 89.1 L235.0 92.8 L240.0 96.1 L245.0 99.0 L250.0 101.5 L255.0 103.6 L260.0 105.3 L265.0 106.8 L270.0 108.0 L275.0 108.9 L280.0 109.7 L285.0 110.2 L290.0 110.7 L295.0 111.0 L300.0 111.3' fill='none' stroke='%239b7bff' stroke-opacity='.6' stroke-width='2'/%3E%3Cpath d='M102 112 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L198 112 Z' fill='%239b7bff' fill-opacity='0.20'/%3E%3Cline x1='150' y1='20' x2='150' y2='112' stroke='%239b7bff' stroke-opacity='.6' stroke-dasharray='3 4'/%3E%3Cline x1='0' y1='112' x2='300' y2='112' stroke='%23ffffff' stroke-opacity='.12'/%3E%3C/svg%3E"),
+        linear-gradient(rgba(155, 123, 255, .08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(155, 123, 255, .08) 1px, transparent 1px),
+        linear-gradient(135deg, #1b1636 0%, #121a33 100%);
+    border-color: rgba(155, 123, 255, .25);
+}
+
+/* --- V2 · Banda: tarjeta blanca con franja de color arriba y sello --- */
+:root .b-hola[data-v="2"] {
+    padding-top: 30px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Cpath d='M0.0 111.3 L5.0 111.0 L10.0 110.7 L15.0 110.2 L20.0 109.7 L25.0 108.9 L30.0 108.0 L35.0 106.8 L40.0 105.3 L45.0 103.6 L50.0 101.5 L55.0 99.0 L60.0 96.1 L65.0 92.8 L70.0 89.1 L75.0 84.9 L80.0 80.2 L85.0 75.2 L90.0 69.9 L95.0 64.3 L100.0 58.5 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L200.0 58.5 L205.0 64.3 L210.0 69.9 L215.0 75.2 L220.0 80.2 L225.0 84.9 L230.0 89.1 L235.0 92.8 L240.0 96.1 L245.0 99.0 L250.0 101.5 L255.0 103.6 L260.0 105.3 L265.0 106.8 L270.0 108.0 L275.0 108.9 L280.0 109.7 L285.0 110.2 L290.0 110.7 L295.0 111.0 L300.0 111.3' fill='none' stroke='%237048ff' stroke-opacity='.4' stroke-width='2'/%3E%3Cpath d='M102 112 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L198 112 Z' fill='%237048ff' fill-opacity='0.13'/%3E%3Cline x1='150' y1='20' x2='150' y2='112' stroke='%237048ff' stroke-opacity='.4' stroke-dasharray='3 4'/%3E%3Cline x1='0' y1='112' x2='300' y2='112' stroke='%2314151c' stroke-opacity='.12'/%3E%3C/svg%3E");
+    background-size: 210px auto;
+    background-position: right 14px bottom 10px;
+    background-repeat: no-repeat;
+}
+:root .b-hola[data-v="2"]::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #7048ff, #2f6bff 60%, #ff5a36);
+}
+:root[data-tema="noche"] .b-hola[data-v="2"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Cpath d='M0.0 111.3 L5.0 111.0 L10.0 110.7 L15.0 110.2 L20.0 109.7 L25.0 108.9 L30.0 108.0 L35.0 106.8 L40.0 105.3 L45.0 103.6 L50.0 101.5 L55.0 99.0 L60.0 96.1 L65.0 92.8 L70.0 89.1 L75.0 84.9 L80.0 80.2 L85.0 75.2 L90.0 69.9 L95.0 64.3 L100.0 58.5 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L200.0 58.5 L205.0 64.3 L210.0 69.9 L215.0 75.2 L220.0 80.2 L225.0 84.9 L230.0 89.1 L235.0 92.8 L240.0 96.1 L245.0 99.0 L250.0 101.5 L255.0 103.6 L260.0 105.3 L265.0 106.8 L270.0 108.0 L275.0 108.9 L280.0 109.7 L285.0 110.2 L290.0 110.7 L295.0 111.0 L300.0 111.3' fill='none' stroke='%239b7bff' stroke-opacity='.6' stroke-width='2'/%3E%3Cpath d='M102 112 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L198 112 Z' fill='%239b7bff' fill-opacity='0.20'/%3E%3Cline x1='150' y1='20' x2='150' y2='112' stroke='%239b7bff' stroke-opacity='.6' stroke-dasharray='3 4'/%3E%3Cline x1='0' y1='112' x2='300' y2='112' stroke='%23ffffff' stroke-opacity='.12'/%3E%3C/svg%3E");
+}
+
+/* --- V3 · Vibrante: tarjeta de color con texto blanco --- */
+:root .b-hola[data-v="3"],
+:root[data-tema="noche"] .b-hola[data-v="3"] {
+    color: #fff;
+    border-color: transparent;
+    background-color: #5b3df5;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Cpath d='M0.0 111.3 L5.0 111.0 L10.0 110.7 L15.0 110.2 L20.0 109.7 L25.0 108.9 L30.0 108.0 L35.0 106.8 L40.0 105.3 L45.0 103.6 L50.0 101.5 L55.0 99.0 L60.0 96.1 L65.0 92.8 L70.0 89.1 L75.0 84.9 L80.0 80.2 L85.0 75.2 L90.0 69.9 L95.0 64.3 L100.0 58.5 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L200.0 58.5 L205.0 64.3 L210.0 69.9 L215.0 75.2 L220.0 80.2 L225.0 84.9 L230.0 89.1 L235.0 92.8 L240.0 96.1 L245.0 99.0 L250.0 101.5 L255.0 103.6 L260.0 105.3 L265.0 106.8 L270.0 108.0 L275.0 108.9 L280.0 109.7 L285.0 110.2 L290.0 110.7 L295.0 111.0 L300.0 111.3' fill='none' stroke='%23ffffff' stroke-opacity='.55' stroke-width='2'/%3E%3Cpath d='M102 112 L105.0 52.7 L110.0 47.0 L115.0 41.5 L120.0 36.3 L125.0 31.7 L130.0 27.6 L135.0 24.4 L140.0 22.0 L145.0 20.5 L150.0 20.0 L155.0 20.5 L160.0 22.0 L165.0 24.4 L170.0 27.6 L175.0 31.7 L180.0 36.3 L185.0 41.5 L190.0 47.0 L195.0 52.7 L198 112 Z' fill='%23ffffff' fill-opacity='0.18'/%3E%3Cline x1='150' y1='20' x2='150' y2='112' stroke='%23ffffff' stroke-opacity='.55' stroke-dasharray='3 4'/%3E%3Cline x1='0' y1='112' x2='300' y2='112' stroke='%23ffffff' stroke-opacity='.3'/%3E%3C/svg%3E"),
+        radial-gradient(80% 90% at 100% 0%, rgba(255, 255, 255, .22), transparent 60%),
+        radial-gradient(70% 80% at 0% 100%, rgba(255, 90, 54, .35), transparent 60%),
+        linear-gradient(135deg, #7048ff 0%, #3d5bff 100%);
+    background-size: 210px auto, auto, auto, auto;
+    background-position: right 14px bottom 10px, 0 0, 0 0, 0 0;
+    background-repeat: no-repeat;
+    box-shadow: 0 18px 40px -16px rgba(91, 61, 245, .6);
+}
+:root .b-hola[data-v="3"] .b-titulo,
+:root .b-hola[data-v="3"] .b-titulo-color { color: #fff; -webkit-text-fill-color: #fff; background: none; }
+:root .b-hola[data-v="3"] .b-sub,
+:root .b-hola[data-v="3"] .b-eyebrow,
+:root .b-hola[data-v="3"] .b-frase { color: rgba(255, 255, 255, .82); }
+:root .b-hola[data-v="3"] .b-frase .autor { color: rgba(255, 255, 255, .6); }
+:root .b-hola[data-v="3"] .b-racha { background: rgba(255, 255, 255, .18); color: #fff; }
+
+@media (max-width: 640px) {
+    :root .b-hola[data-v] {
+        background-size: 150px auto, 22px 22px, 22px 22px, auto;
+        padding-bottom: 26px;
+    }
+    :root .b-hola[data-v="2"] { background-size: 150px auto; }
+    :root .b-hola[data-v="3"] { background-size: 150px auto, auto, auto, auto; }
+    :root .b-hola[data-v] .b-hola-texto { max-width: none; }
+}
+
+:root .b-hola[data-v="3"] #fraseHero { color: rgba(255, 255, 255, .85); }
+:root .b-hola[data-v="3"] #fraseHero .autor { color: rgba(255, 255, 255, .62); }
+
+@media (max-width: 640px) {
+    /* En el móvil la curva va pequeña, arriba a la derecha, sin pisar el texto */
+    :root .b-hola[data-v],
+    :root[data-tema="noche"] .b-hola[data-v] {
+        background-position: right 14px top 16px, 0 0, 0 0, 0 0;
+        background-size: 92px auto, 22px 22px, 22px 22px, auto;
+    }
+    :root .b-hola[data-v="2"],
+    :root[data-tema="noche"] .b-hola[data-v="2"] { background-position: right 14px top 22px; background-size: 92px auto; }
+    :root .b-hola[data-v="3"],
+    :root[data-tema="noche"] .b-hola[data-v="3"] { background-size: 92px auto, auto, auto, auto; }
+    :root .b-hola[data-v] .b-eyebrow { padding-right: 96px; }
+}
+
+
+/* =========================================================
+   MÓVIL: jerarquía clara entre la portada y el aviso de examen
+   - El título: tarjeta lavanda grande, con la cita.
+   - El examen: franja oscura compacta, cuenta atrás en una línea.
+========================================================= */
+
+@media (max-width: 640px) {
+
+    :root .b-hola[data-v] {
+        padding: 26px 22px 24px;
+    }
+
+    :root .b-hola[data-v] .b-titulo {
+        font-size: clamp(2rem, 9.2vw, 2.6rem);
+        line-height: 1.05;
+    }
+
+    :root .b-hola[data-v] .b-frase {
+        display: block;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(112, 72, 255, .15);
+        font-size: .9rem;
+    }
+
+    :root .b-examen {
+        padding: 16px 18px 14px;
+        border-radius: 16px;
+    }
+
+    :root .b-examen .b-etiqueta {
+        margin-bottom: 6px;
+        font-size: .66rem;
+    }
+
+    :root .b-examen-titulo {
+        margin-bottom: 2px;
+        font-size: .95rem;
+        line-height: 1.3;
+    }
+
+    :root .b-examen-fecha {
+        margin-bottom: 10px;
+        font-size: .76rem;
+    }
+
+    :root .b-examen .ep-cuenta {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    :root .b-examen .ep-cuenta div {
+        display: flex;
+        align-items: baseline;
+        gap: 3px;
+        padding: 0;
+        background: none;
+        border: 0;
+    }
+
+    :root .b-examen .ep-cuenta strong {
+        font-size: 1.35rem;
+        line-height: 1;
+    }
+
+    :root .b-examen .ep-cuenta small {
+        margin: 0;
+        font-size: .62rem;
+        letter-spacing: .04em;
+        text-transform: lowercase;
+    }
+
+    :root .b-examen-sig {
+        margin-top: 8px;
+    }
+}
