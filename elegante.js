@@ -55,25 +55,9 @@
         if (meta) meta.setAttribute("content", tema === "noche" ? "#0b0d17" : "#f4f4f7");
     }
 
-    /* Modo por defecto: el que tenga el móvil u ordenador (claro u oscuro).
-       Si el alumno pulsa el botón ☀/☾, se respeta su elección. */
-    var oscuroSistema = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
-
-    function temaInicial() {
-        var elegido = leer("tema-web");
-        if (elegido === "noche" || elegido === "claro") return elegido;
-        return oscuroSistema && oscuroSistema.matches ? "noche" : "claro";
-    }
-
-    aplicarTema(temaInicial());
-
-    if (oscuroSistema) {
-        var alCambiar = function () {
-            if (!leer("tema-web")) aplicarTema(oscuroSistema.matches ? "noche" : "claro");
-        };
-        if (oscuroSistema.addEventListener) oscuroSistema.addEventListener("change", alCambiar);
-        else if (oscuroSistema.addListener) oscuroSistema.addListener(alCambiar);
-    }
+    /* Modo día por defecto. Si el alumno pulsa el botón ☀/☾,
+       se respeta su elección en ese dispositivo. */
+    aplicarTema(leer("tema-web") === "noche" ? "noche" : "claro");
 
     var movimientoReducido =
         window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -157,8 +141,10 @@
         var pie = document.getElementById("footer-container");
         if (!pie || !pie.firstElementChild) return;
         pie.style.marginTop = "";
-        var hueco = window.innerHeight -
-            (pie.getBoundingClientRect().bottom + window.scrollY);
+        /* clientHeight no cambia cuando el móvil esconde la barra de
+           direcciones; así no queda hueco bajo el pie */
+        var alto = document.documentElement.clientHeight || window.innerHeight;
+        var hueco = alto - (pie.getBoundingClientRect().bottom + window.scrollY);
         if (hueco > 0) {
             var base = parseFloat(getComputedStyle(pie).marginTop) || 0;
             pie.style.marginTop = (base + hueco) + "px";
@@ -557,6 +543,7 @@
             '    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2a8 8 0 016.32 12.9l5.39 5.4-1.41 1.4-5.4-5.39A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>' +
             '    <input type="search" placeholder="Busca un tema, un vídeo, «derivadas», «Bayes»…" autocomplete="off" spellcheck="false">' +
             '    <kbd>Esc</kbd>' +
+            '    <button type="button" class="buscador-cerrar" aria-label="Cerrar el buscador">×</button>' +
             '  </div>' +
             '  <ul class="buscador-lista" role="listbox"></ul>' +
             '  <p class="buscador-pie"><span><kbd>↑</kbd><kbd>↓</kbd> moverse</span><span><kbd>Enter</kbd> abrir</span></p>' +
@@ -660,6 +647,7 @@
         });
 
         buscador.querySelector(".buscador-fondo").addEventListener("click", cerrarBuscador);
+        buscador.querySelector(".buscador-cerrar").addEventListener("click", cerrarBuscador);
 
         buscador.buscar = buscar;
     }
@@ -1413,6 +1401,81 @@
     }
 
 
+    /* Saludo con gracia según la hora (cabecera de la portada).
+       Cada franja tiene varias versiones que van rotando por días. */
+
+    var SALUDOS = [
+        /* [desde la hora, hasta la hora, [saludo, coletilla]…] */
+        [0, 6, [
+            ["Buenas noches, noctámbulo.", "Ya que estás despierto, un ejercicio rápido… y a dormir, que el cerebro también estudia mientras duermes."],
+            ["Hola, búho nocturno.", "A estas horas solo quedan despiertos los astrónomos, los panaderos y tú."],
+            ["Buenas noches, trasnochador.", "Dato: dormir bien mejora la memoria. Repasa un poco y a la cama."]
+        ]],
+        [6, 9, [
+            ["Buenos días, madrugador.", "Tú y el sol, los primeros en ponerse en marcha."],
+            ["Buenos días, gente madrugadora.", "Café, Cola Cao o lo que haga falta: hoy toca darlo todo."],
+            ["Arriba, madrugador.", "Las mañanas tempranas tienen algo de superpoder."]
+        ]],
+        [9, 14, [
+            ["Buenos días.", "Cabeza fresca, mañana por delante: el mejor momento para entender algo nuevo."],
+            ["Buenos días, crack.", "Las matrices no se van a multiplicar solas."],
+            ["Hola, buenos días.", "Hoy es un buen día para que algo que no entendías, por fin haga clic."]
+        ]],
+        [14, 17, [
+            ["Buenas tardes.", "Hora de la siesta… o de unas derivadas. Tú decides."],
+            ["Buenas tardes, campeón.", "Después de comer, un repaso ligero entra mejor de lo que parece."],
+            ["Hola, buenas tardes.", "Sobremesa con estadística: más entretenida de lo que suena."]
+        ]],
+        [17, 21, [
+            ["Buenas tardes.", "Momento perfecto para repasar un poco y quitártelo de encima."],
+            ["Buenas tardes, crack.", "Un rato de mates ahora y la tarde entera es tuya."],
+            ["Hola, buenas tardes.", "Merienda, apuntes y a por ello."]
+        ]],
+        [21, 24, [
+            ["Buenas noches.", "Último repaso del día y a descansar, que mañana también hay clase."],
+            ["Buenas noches, noctámbulo.", "Lo que repases ahora, tu cerebro lo ordena mientras duermes."],
+            ["Buenas noches, búho.", "Un ejercicio más y a dormir. Palabra de profe."]
+        ]]
+    ];
+
+    var SALUDOS_ESPECIALES = {
+        viernes: ["¡Por fin viernes!", "Un vistazo rápido a lo de la semana y a disfrutar del finde."],
+        sabado: ["Feliz sábado.", "Hoy toca descansar… aunque un repasito ligero no hace daño a nadie."],
+        domingo: ["Feliz domingo.", "El clásico domingo de repaso. Mejor ahora que el lunes a primera hora."]
+    };
+
+    function ocurrenciaDelDia() {
+
+        var el = document.getElementById("ocurrencia");
+        if (!el) return;
+
+        var ahora = new Date();
+        var h = ahora.getHours();
+        var dia = ahora.getDay();           /* 0 domingo … 6 sábado */
+        var n = Math.floor((Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()) - Date.UTC(2026, 0, 1)) / 86400000);
+
+        var par = null;
+
+        if (dia === 5 && h >= 15 && h < 21) par = SALUDOS_ESPECIALES.viernes;
+        else if (dia === 6 && h >= 9 && h < 21) par = SALUDOS_ESPECIALES.sabado;
+        else if (dia === 0 && h >= 9 && h < 21) par = SALUDOS_ESPECIALES.domingo;
+
+        if (!par) {
+            for (var i = 0; i < SALUDOS.length; i++) {
+                if (h >= SALUDOS[i][0] && h < SALUDOS[i][1]) {
+                    var opciones = SALUDOS[i][2];
+                    par = opciones[((n % opciones.length) + opciones.length) % opciones.length];
+                    break;
+                }
+            }
+        }
+
+        el.innerHTML = '<strong class="saludo-hora"></strong> <span class="saludo-coletilla"></span>';
+        el.firstChild.textContent = par[0];
+        el.lastChild.textContent = par[1];
+    }
+
+
     /* =====================================================
        ARRANQUE
     ===================================================== */
@@ -1424,6 +1487,7 @@
         if (pagina === "inicio") {
             lienzoHero();
             saludoYRacha();
+            ocurrenciaDelDia();
             proximoExamen();
             retoDelDia();
             var bc = document.getElementById("abrir-calculadora");

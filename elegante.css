@@ -4967,3 +4967,55 @@
 :root[data-cabecera="si"] .banda.videos-propios::after {
     background: none !important;
 }
+
+
+/* ---------- Ajustes ---------- */
+
+/* La frase del día ya no va en la cabecera */
+:root .hero-frase {
+    display: none;
+}
+
+/* Botón X para cerrar el buscador */
+:root .buscador-cerrar {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--borde);
+    border-radius: 50%;
+    background: var(--relleno);
+    color: var(--tinta-2);
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+:root .buscador-cerrar:hover {
+    background: var(--tinta);
+    border-color: var(--tinta);
+    color: var(--tarjeta);
+}
+
+:root[data-tema="noche"] .buscador-cerrar:hover {
+    background: #fff;
+    color: #0b0d17;
+}
+
+/* Al «rebotar» arriba o abajo en el móvil se ve oscuro,
+   igual que la cabecera y el pie, en vez de una franja clara */
+:root {
+    background: #0d0c1c;
+}
+
+/* Saludo con gracia en la cabecera */
+:root .hero-lead .saludo-hora {
+    font-weight: 600;
+    color: #fff;
+}
+
+:root .hero-lead .saludo-coletilla {
+    color: rgba(255, 255, 255, .72);
+}
